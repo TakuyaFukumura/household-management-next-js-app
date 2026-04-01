@@ -1,12 +1,10 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import {DarkModeProvider} from "./components/DarkModeProvider";
-import Header from "./components/Header";
 import React from "react";
 
 export const metadata: Metadata = {
-    title: "基本Next.jsアプリ",
-    description: "SQLiteからメッセージを取得するシンプルなNext.jsアプリケーション",
+    title: "家計簿アプリ",
+    description: "CSVから収支を管理する家計簿アプリケーション",
 };
 
 export default function RootLayout({
@@ -17,11 +15,9 @@ export default function RootLayout({
     return (
         <html lang="ja">
         <body className="antialiased">
-        <DarkModeProvider>
-            <Header/>
-            {children}
-        </DarkModeProvider>
+        {children}
         </body>
         </html>
     );
 }
+
