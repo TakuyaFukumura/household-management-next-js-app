@@ -32,8 +32,8 @@ function buildChartData(transactions: Transaction[]): ChartEntry[] {
     }));
 }
 
-function renderCustomLabel({name, percentage}: {name: string; percentage: number}) {
-    return `${name} (${percentage.toFixed(1)}%)`;
+function renderCustomLabel({name, percent}: {name: string; percent: number}) {
+    return `${name} (${(percent * 100).toFixed(1)}%)`;
 }
 
 export default function ExpensePieChart({transactions}: Props) {

@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import CsvUploader from '@/app/components/CsvUploader';
 
 jest.mock('papaparse', () => ({
-    parse: jest.fn((file: File, options: {complete: (results: {data: string[][]}) => void}) => {
+    parse: jest.fn((file: File, options: {complete: (results: {data: string[][], errors: {row?: number; message: string}[]}) => void}) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             const text = e.target?.result as string;
             const rows = text.split('\n').filter(Boolean).map((row) => row.split(','));
-            options.complete({data: rows});
+            options.complete({data: rows, errors: []});
         };
         reader.readAsText(file);
     }),

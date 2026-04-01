@@ -58,6 +58,14 @@ export default function CsvUploader({onDataLoaded}: Props) {
                 const transactions: Transaction[] = [];
                 const errors: ValidationError[] = [];
 
+                // CSVパースエラーをバリデーションエラーとして追加
+                for (const parseError of results.errors ?? []) {
+                    errors.push({
+                        row: (parseError.row ?? 0) + 1,
+                        message: `CSVパースエラー: ${parseError.message}`,
+                    });
+                }
+
                 // Skip header row (index 0)
                 for (let i = 1; i < rows.length; i++) {
                     const {transaction, error} = validateRow(rows[i], i + 1);
@@ -106,7 +114,10 @@ export default function CsvUploader({onDataLoaded}: Props) {
             onDragLeave={handleDragLeave}
             onClick={() => inputRef.current?.click()}
             onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click();
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    inputRef.current?.click();
+                }
             }}
         >
             <input

@@ -23,7 +23,10 @@ export default function TransactionTable({transactions}: Props) {
                 </thead>
                 <tbody>
                     {sorted.map((t, i) => (
-                        <tr key={i} className="border-t border-gray-100 hover:bg-gray-50">
+                        <tr
+                            key={`${i}-${t.date}-${t.category}-${t.type}-${t.amount}-${t.memo}`}
+                            className="border-t border-gray-100 hover:bg-gray-50"
+                        >
                             <td className="px-4 py-3">{t.date}</td>
                             <td className="px-4 py-3">{t.category}</td>
                             <td className="px-4 py-3">
