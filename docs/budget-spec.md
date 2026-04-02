@@ -70,10 +70,10 @@ public/data/budget.csv
 
 ### 3.4 バリデーション規則
 
+- ヘッダー行を除く各行はカラム数が正確に 3 であること（過不足はエラー）
 - `カテゴリ` は `INCOME_CATEGORIES` または `EXPENSE_CATEGORIES` のいずれかに含まれること
 - `種別` は `収入` または `支出` であること
 - `予算金額` は正の整数であること
-- ヘッダー行を除く各行はすべてのカラムが揃っていること
 
 ---
 
@@ -242,10 +242,24 @@ export interface BudgetValidationError {
 ```typescript
 // src/lib/budget.ts（続き）
 
+import {EXPENSE_CATEGORIES, INCOME_CATEGORIES} from './constants';
+
+function isIncomeCategory(category: string): category is IncomeCategory {
+    return (INCOME_CATEGORIES as readonly string[]).includes(category);
+}
+
+function isExpenseCategory(category: string): category is ExpenseCategory {
+    return (EXPENSE_CATEGORIES as readonly string[]).includes(category);
+}
+
 export function validateBudgetRow(
     row: string[],
     rowIndex: number,
 ): {entry: BudgetEntry | null; error: BudgetValidationError | null} {
+    if (row.length !== 3) {
+        return {entry: null, error: {row: rowIndex, message: `カラム数が不正です: ${row.length}列（3列固定）`}};
+    }
+
     const [category, type, amountStr] = row;
 
     if (!category || !type || !amountStr) {
@@ -264,12 +278,24 @@ export function validateBudgetRow(
 
     if (type === '収入') {
         if (!isIncomeCategory(category)) {
-            return {entry: null, error: {row: rowIndex, message: `収入カテゴリが不正です: ${category}`}};
+            return {
+                entry: null,
+                error: {
+                    row: rowIndex,
+                    message: `収入カテゴリが不正です: ${category}（許可されているカテゴリ: ${INCOME_CATEGORIES.join(', ')}）`,
+                },
+            };
         }
         return {entry: {category, type, amount}, error: null};
     } else {
         if (!isExpenseCategory(category)) {
-            return {entry: null, error: {row: rowIndex, message: `支出カテゴリが不正です: ${category}`}};
+            return {
+                entry: null,
+                error: {
+                    row: rowIndex,
+                    message: `支出カテゴリが不正です: ${category}（許可されているカテゴリ: ${EXPENSE_CATEGORIES.join(', ')}）`,
+                },
+            };
         }
         return {entry: {category, type, amount}, error: null};
     }
