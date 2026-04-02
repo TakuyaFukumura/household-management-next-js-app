@@ -8,12 +8,47 @@ import TransactionTable from './components/TransactionTable';
 import CategoryTable from './components/CategoryTable';
 import ExpensePieChart from './components/ExpensePieChart';
 import Header from './components/Header';
+import MonthNavigator from './components/MonthNavigator';
+
+function getCurrentMonth(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
 
 export default function Home() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [errors, setErrors] = useState<ValidationError[]>([]);
     const [hasLoaded, setHasLoaded] = useState(false);
     const [fetchError, setFetchError] = useState<string | null>(null);
+    const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
+
+    useEffect(() => {
+        if (!hasLoaded) return;
+        if (transactions.length === 0) {
+            setSelectedMonth(getCurrentMonth());
+            return;
+        }
+        const latest = [...transactions]
+            .sort((a, b) => b.date.localeCompare(a.date))[0].date
+            .slice(0, 7);
+        setSelectedMonth(latest);
+    }, [hasLoaded, transactions]);
+
+    function handlePrevMonth() {
+        const [year, month] = selectedMonth.split('-').map(Number);
+        const d = new Date(year, month - 2);
+        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+
+    function handleNextMonth() {
+        const [year, month] = selectedMonth.split('-').map(Number);
+        const d = new Date(year, month);
+        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+
+    const filteredTransactions = transactions.filter(
+        (t) => t.date.startsWith(selectedMonth)
+    );
 
     useEffect(() => {
         fetch('/data/household.csv')
@@ -89,14 +124,28 @@ export default function Home() {
 
                 {hasLoaded && !fetchError && (
                     <>
-                        <SummaryCards transactions={transactions}/>
+                        <MonthNavigator
+                            selectedMonth={selectedMonth}
+                            onPrevMonth={handlePrevMonth}
+                            onNextMonth={handleNextMonth}
+                        />
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <CategoryTable transactions={transactions}/>
-                            <ExpensePieChart transactions={transactions}/>
-                        </div>
+                        {filteredTransactions.length === 0 ? (
+                            <div className="text-center py-16 text-gray-400 text-lg">
+                                データがありません
+                            </div>
+                        ) : (
+                            <>
+                                <SummaryCards transactions={filteredTransactions}/>
 
-                        <TransactionTable transactions={transactions}/>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <CategoryTable transactions={filteredTransactions}/>
+                                    <ExpensePieChart transactions={filteredTransactions}/>
+                                </div>
+
+                                <TransactionTable transactions={filteredTransactions}/>
+                            </>
+                        )}
                     </>
                 )}
             </main>

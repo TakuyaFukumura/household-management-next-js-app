@@ -123,4 +123,40 @@ describe('Home（メインページ）', () => {
 
         expect(screen.getByText(/バリデーションエラー/)).toBeInTheDocument();
     });
+
+    it('CSVを正常に読み込んだ後に月ナビゲーターが表示される', async () => {
+        (global.fetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            text: () => Promise.resolve(SAMPLE_CSV),
+        });
+
+        await act(async () => {
+            render(<Home/>);
+            await flushPromises();
+        });
+
+        expect(screen.getByRole('button', {name: /前月/})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: /翌月/})).toBeInTheDocument();
+    });
+
+    it('データが存在しない月を選択した場合「データがありません」が表示される', async () => {
+        // SAMPLE_CSV のデータは 2024-01 のみなので、初期月が 2024-01 に設定される
+        // その後「翌月」ボタンで 2024-02 に移動するとデータなし表示になる
+        (global.fetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            text: () => Promise.resolve(SAMPLE_CSV),
+        });
+
+        await act(async () => {
+            render(<Home/>);
+            await flushPromises();
+        });
+
+        const nextButton = screen.getByRole('button', {name: /翌月/});
+        await act(async () => {
+            nextButton.click();
+        });
+
+        expect(screen.getByText('データがありません')).toBeInTheDocument();
+    });
 });
