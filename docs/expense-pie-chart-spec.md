@@ -141,7 +141,7 @@ const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'
 | 13 | `#8cd17d` | ライトグリーン |
 | 14 | `#b6992d` | オリーブゴールド |
 
-> 参考：[Tableau 10 および Tableau 20 カラーパレット](https://www.tableau.com/blog/colors-upgrade-tableau-10-56782)  
+> 参考：[Tableau 10 及び Tableau 20 カラーパレット](https://www.tableau.com/blog/colors-upgrade-tableau-10-56782)  
 > このパレットはデータ可視化の分野で広く使われており、視認性・識別性・品位のバランスが取れている。
 
 #### 変更対象ファイル
