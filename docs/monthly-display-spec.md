@@ -103,11 +103,11 @@ CSVデータ読み込み完了
 ```
 前月移動:
   selectedMonth = "YYYY-MM"
-  → new Date(YYYY, MM - 1 - 1) → "YYYY'-MM'" に変換
+  → new Date(YYYY, MM - 1 - 1) → "YYYY-MM" に変換
 
 翌月移動:
   selectedMonth = "YYYY-MM"
-  → new Date(YYYY, MM - 1 + 1) → "YYYY'-MM'" に変換
+  → new Date(YYYY, MM - 1 + 1) → "YYYY-MM" に変換
 ```
 
 年跨ぎ（例: 2025-01 → 2024-12、2025-12 → 2026-01）は `Date` オブジェクトが自動的に処理します。
