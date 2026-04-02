@@ -1,11 +1,12 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
-import {Transaction} from './CsvUploader';
+import type {DefaultLegendContentProps, PieSectorShapeProps} from 'recharts';
+import {Label, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
+import type {Transaction} from '@/app/components/CsvUploader';
 
 interface Props {
-    transactions: Transaction[];
+    readonly transactions: Transaction[];
 }
 
 const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
@@ -16,6 +17,10 @@ interface ChartEntry {
     name: string;
     value: number;
     percentage: number;
+}
+
+interface ChartEntryWithFill extends ChartEntry {
+    fill: string;
 }
 
 function buildChartData(transactions: Transaction[]): ChartEntry[] {
@@ -61,22 +66,14 @@ function aggregateSmallSlices(entries: ChartEntry[], total: number): ChartEntry[
     ];
 }
 
-function renderActiveShape(props: {
-    cx: number;
-    cy: number;
-    innerRadius: number;
-    outerRadius: number;
-    startAngle: number;
-    endAngle: number;
-    fill: string;
-}) {
-    const {cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill} = props;
+function renderPieShape(props: PieSectorShapeProps) {
+    const {cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill = '#808080', isActive} = props;
     return (
         <Sector
             cx={cx}
             cy={cy}
             innerRadius={innerRadius}
-            outerRadius={outerRadius + 10}
+            outerRadius={isActive ? outerRadius + 10 : outerRadius}
             startAngle={startAngle}
             endAngle={endAngle}
             fill={fill}
@@ -84,31 +81,35 @@ function renderActiveShape(props: {
     );
 }
 
-function renderCustomLegend(props: {payload?: Array<{color: string; payload: ChartEntry}>}) {
+function renderCustomLegend(props: DefaultLegendContentProps) {
     const {payload = []} = props;
     return (
         <ul className="mt-2 space-y-1 text-sm">
-            {payload.map((entry) => (
-                <li key={entry.payload.name} className="flex items-center gap-2">
-                    <span
-                        className="inline-block w-3 h-3 rounded-full flex-shrink-0"
-                        style={{backgroundColor: entry.color}}
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                        {entry.payload.name}：¥{entry.payload.value.toLocaleString()}（{entry.payload.percentage.toFixed(1)}%）
-                    </span>
-                </li>
-            ))}
+            {payload.map((entry) => {
+                const chartEntry = entry.payload as ChartEntry;
+                return (
+                    <li key={chartEntry.name} className="flex items-center gap-2">
+                        <span
+                            className="inline-block w-3 h-3 rounded-full shrink-0"
+                            style={{backgroundColor: entry.color}}
+                        />
+                        <span className="text-gray-700 dark:text-gray-300">
+                            {chartEntry.name}：¥{chartEntry.value.toLocaleString()}（{chartEntry.percentage.toFixed(1)}%）
+                        </span>
+                    </li>
+                );
+            })}
         </ul>
     );
 }
 
-function formatTooltipValue(value: unknown) {
-    return typeof value === 'number' ? `¥${value.toLocaleString()}` : String(value ?? '');
+function formatTooltipValue(value: unknown): string {
+    if (typeof value === 'number') return `¥${value.toLocaleString()}`;
+    if (typeof value === 'string') return value;
+    return '';
 }
 
-export default function ExpensePieChart({transactions}: Props) {
-    const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+export default function ExpensePieChart({transactions}: Readonly<Props>) {
     const [isDark, setIsDark] = useState(false);
 
     React.useEffect(() => {
@@ -121,7 +122,10 @@ export default function ExpensePieChart({transactions}: Props) {
 
     const rawData = buildChartData(transactions);
     const total = rawData.reduce((sum, e) => sum + e.value, 0);
-    const data = aggregateSmallSlices(rawData, total);
+    const data: ChartEntryWithFill[] = aggregateSmallSlices(rawData, total).map((entry, index) => ({
+        ...entry,
+        fill: COLORS[index % COLORS.length],
+    }));
 
     if (data.length === 0) {
         return (
@@ -143,15 +147,9 @@ export default function ExpensePieChart({transactions}: Props) {
                         innerRadius={60}
                         outerRadius={100}
                         dataKey="value"
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        onMouseEnter={(_, index) => setActiveIndex(index)}
-                        onMouseLeave={() => setActiveIndex(undefined)}
+                        shape={renderPieShape}
                         isAnimationActive={true}
                     >
-                        {data.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
-                        ))}
                         <Label
                             value={`合計 ¥${total.toLocaleString()}`}
                             position="center"
@@ -165,4 +163,3 @@ export default function ExpensePieChart({transactions}: Props) {
         </div>
     );
 }
-
