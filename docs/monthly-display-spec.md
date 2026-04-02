@@ -150,22 +150,35 @@ Props
 
 #### 追加する State
 
+`selectedMonth` の初期値は現在の年月（今月）とします。  
+これにより、CSVデータ読み込み完了前でも `startsWith(selectedMonth)` が意図しない全件マッチを起こさず、  
+かつ `MonthNavigator` が即座に有効な年月を表示できます。
+
 ```typescript
-const [selectedMonth, setSelectedMonth] = useState<string>('');
+function getCurrentMonth(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
 ```
 
 #### 初期月の設定
 
-`transactions` が確定した（`hasLoaded` が `true` になった）タイミングで `selectedMonth` を設定します。
+`transactions` が確定した（`hasLoaded` が `true` になった）タイミングで `selectedMonth` を設定します。  
+`transactions` が空の場合は今月のまま維持します。
 
 ```typescript
 useEffect(() => {
-  if (hasLoaded && transactions.length > 0) {
-    const latest = [...transactions]
-      .sort((a, b) => b.date.localeCompare(a.date))[0].date
-      .slice(0, 7);
-    setSelectedMonth(latest);
+  if (!hasLoaded) return;
+  if (transactions.length === 0) {
+    setSelectedMonth(getCurrentMonth());
+    return;
   }
+  const latest = [...transactions]
+    .sort((a, b) => b.date.localeCompare(a.date))[0].date
+    .slice(0, 7);
+  setSelectedMonth(latest);
 }, [hasLoaded, transactions]);
 ```
 
@@ -179,14 +192,26 @@ const filteredTransactions = transactions.filter(
 
 #### 月移動ハンドラー
 
+`selectedMonth` が有効な `"YYYY-MM"` 形式でない場合（初期化前など）はフォールバックとして今月を設定します。  
+また、`MonthNavigator` 側でも `selectedMonth` が空文字のときはボタンを `disabled` にするか、  
+`page.tsx` の初期値を今月にすることで未設定状態をなくす方針とします（後者を推奨）。
+
 ```typescript
 function handlePrevMonth() {
+  if (!selectedMonth) {
+    setSelectedMonth(getCurrentMonth());
+    return;
+  }
   const [year, month] = selectedMonth.split('-').map(Number);
   const d = new Date(year, month - 2);
   setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
 }
 
 function handleNextMonth() {
+  if (!selectedMonth) {
+    setSelectedMonth(getCurrentMonth());
+    return;
+  }
   const [year, month] = selectedMonth.split('-').map(Number);
   const d = new Date(year, month);
   setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
