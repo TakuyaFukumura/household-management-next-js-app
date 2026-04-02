@@ -28,6 +28,16 @@ describe('Header', () => {
         expect(screen.getByText('家計簿アプリ')).toBeInTheDocument();
     });
 
+    it('/へのナビゲーションリンクが表示される', () => {
+        render(<Header/>);
+        expect(screen.getByRole('link', {name: 'ホーム'})).toBeInTheDocument();
+    });
+
+    it('/budgetへのナビゲーションリンクが表示される', () => {
+        render(<Header/>);
+        expect(screen.getByRole('link', {name: '予算'})).toBeInTheDocument();
+    });
+
     it('/uploadへのナビゲーションリンクが表示される', () => {
         render(<Header/>);
         expect(screen.getByRole('link', {name: 'CSVをアップロード'})).toBeInTheDocument();

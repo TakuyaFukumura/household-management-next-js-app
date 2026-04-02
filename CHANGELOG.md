@@ -7,6 +7,27 @@
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-04-02
+
+### 追加
+
+- `public/data/budget.csv`: 予算設定 CSV ファイルを新規作成（収入・支出カテゴリの月次予算金額を定義）
+- `src/lib/budget.ts`: 予算データの型定義（`BudgetEntry`・`BudgetValidationError`）およびバリデーション関数（`validateBudgetRow`）を新規作成
+- `src/app/budget/page.tsx`: 予算画面（`/budget`）を新規作成。予算 CSV・実績 CSV の読み込みと各コンポーネントへのデータ提供
+- `src/app/components/BudgetSummaryCards.tsx`: 収入予算合計・支出予算合計のサマリーカードコンポーネントを新規作成
+- `src/app/components/BudgetPieChart.tsx`: 支出カテゴリ別予算配分のドーナツ型円グラフコンポーネントを新規作成（3% 未満スライスの「その他」集約・カスタム凡例付き）
+- `src/app/components/BudgetBarChart.tsx`: 収入予算・収入実績・支出予算・支出実績を4行で比較する横棒グラフコンポーネントを新規作成
+- `src/app/components/BudgetTable.tsx`: カテゴリ別に予算金額・実績金額・差額を一覧表示するテーブルコンポーネントを新規作成（差額の超過/達成を色で表示）
+
+### 変更
+
+- `src/app/components/Header.tsx`: 「ホーム」（`/`）および「予算」（`/budget`）へのナビゲーションリンクを追加
+- `package.json`: バージョンを `0.8.0` から `0.9.0` に更新
+
+### 削除
+
+- `docs/budget-spec.md`: 実装完了のため削除
+
 ## [0.8.0] - 2026-04-02
 
 ### 変更
