@@ -9,8 +9,8 @@ import {Transaction} from '@/app/components/CsvUploader';
 
 const transactions: Transaction[] = [
     {date: '2024-01-01', category: '給与', type: '収入', amount: 300000, memo: ''},
-    {date: '2024-01-05', category: '食費', type: '支出', amount: 50000, memo: ''},
-    {date: '2024-01-06', category: '食費', type: '支出', amount: 10000, memo: ''},
+    {date: '2024-01-05', category: '食料費', type: '支出', amount: 50000, memo: ''},
+    {date: '2024-01-06', category: '食料費', type: '支出', amount: 10000, memo: ''},
     {date: '2024-01-10', category: '交通費', type: '支出', amount: 20000, memo: ''},
 ];
 
@@ -41,7 +41,7 @@ describe('CategoryTable', () => {
         it('支出カテゴリのみが集計される（収入は除外）', () => {
             render(<CategoryTable transactions={transactions}/>);
             expect(screen.queryByText('給与')).not.toBeInTheDocument();
-            expect(screen.getByText('食費')).toBeInTheDocument();
+            expect(screen.getByText('食料費')).toBeInTheDocument();
             expect(screen.getByText('交通費')).toBeInTheDocument();
         });
 
@@ -62,8 +62,8 @@ describe('CategoryTable', () => {
         it('合計金額が高い順に表示される', () => {
             render(<CategoryTable transactions={transactions}/>);
             const rows = screen.getAllByRole('row');
-            // rows[0] = header, rows[1] = first data row (食費 60000), rows[2] = 交通費 20000
-            expect(rows[1]).toHaveTextContent('食費');
+            // rows[0] = header, rows[1] = first data row (食料費 60000), rows[2] = 交通費 20000
+            expect(rows[1]).toHaveTextContent('食料費');
             expect(rows[2]).toHaveTextContent('交通費');
         });
     });

@@ -86,7 +86,7 @@ describe('UploadPage（CSVアップロードページ）', () => {
     it('バリデーションエラーのあるCSVをアップロードするとエラーが表示される', async () => {
         render(<UploadPage/>);
 
-        const csv = '日付,カテゴリ,種別,金額,メモ\n2024-01-01,食費,不明,5000,メモ\n';
+        const csv = '日付,カテゴリ,種別,金額,メモ\n2024-01-01,食料費,不明,5000,メモ\n';
         const file = makeFile(csv);
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
 

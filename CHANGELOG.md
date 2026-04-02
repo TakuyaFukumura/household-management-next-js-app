@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-04-02
+
+### 追加
+
+- `src/lib/constants.ts`: 収入・支出カテゴリ定数（`INCOME_CATEGORIES`、`EXPENSE_CATEGORIES`）および型（`IncomeCategory`、`ExpenseCategory`）を定義するファイルを新規作成
+
+### 変更
+
+- `src/lib/csv.ts`: `Transaction` の `category` フィールドの型を `string` から `IncomeCategory | ExpenseCategory` に変更
+- `public/sample.csv`: 新規カテゴリ（住宅費・投資額・保険料・特別費・交際費・美容費・教養費・その他）を含むサンプルデータに更新。既存カテゴリの名称変更（食費→食料費、娯楽→娯楽費）を反映
+- `public/data/household.csv`: 同上
+
+### 削除
+
+- `docs/category-spec.md`: 実装完了のため削除
+
 ## [0.4.0] - 2026-04-02
 
 ### 追加
