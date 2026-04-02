@@ -7,6 +7,21 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-04-02
+
+### 追加
+
+- `src/app/components/IncomeExpenseBarChart.tsx`: 収支比較横棒グラフコンポーネントを新規作成。選択中の月の合計収入と合計支出を横棒グラフで比較表示。ダークモード対応済み
+
+### 変更
+
+- `src/app/page.tsx`: `IncomeExpenseBarChart` コンポーネントのインポートと配置追加（`CategoryTable | ExpensePieChart` と `TransactionTable` の間）
+- `package.json`: バージョンを `0.6.0` から `0.7.0` に更新
+
+### 削除
+
+- `docs/income-expense-bar-chart-spec.md`: 実装完了のため削除
+
 ## [0.6.0] - 2026-04-02
 
 ### 追加
