@@ -1,26 +1,50 @@
 # household-management-next-js-app
 
-Next.jsを使ったシンプルな「Hello, world.」アプリケーションです。
-このプロジェクトは、SQLiteデータベースからメッセージを取得して表示する基本的な機能を提供します。
+Next.jsを使ったCSVベースの家計簿アプリケーションです。
+CSVファイルから収支データを読み込み、サマリーカード・カテゴリ別集計・円グラフ・一覧テーブルで収支を可視化します。
 
 ## 技術スタック
 
-- **Next.js 16.1.6** - React フレームワーク（App Routerを使用）
+- **Next.js 16.2.2** - React フレームワーク（App Routerを使用）
 - **React 19.2.4** - ユーザーインターフェース構築
 - **TypeScript** - 型安全性
 - **Tailwind CSS 4** - スタイリング
-- **SQLite** - データベース（better-sqlite3）
+- **PapaParse** - CSVファイルの解析
+- **Recharts** - グラフ描画（円グラフ）
 - **ESLint** - コード品質管理
 
 ## 機能
 
-- SQLiteデータベースから「Hello, world.」メッセージを取得
-- レスポンシブデザイン対応
+- ホーム画面でデフォルトCSV（`public/data/household.csv`）を自動読み込みして収支を表示
+- CSVアップロード画面（`/upload`）でユーザー独自のCSVファイルをドラッグ&ドロップまたはクリックでアップロード
+- サマリーカード：合計収入・合計支出・収支差額を表示
+- カテゴリ別支出一覧テーブル（合計金額降順）
+- 支出割合円グラフ（Rechartsを使用）
+- 収支一覧テーブル（日付降順）
+- CSVバリデーション：形式不正・カテゴリ不正などのエラーを行単位で表示
 - ダークモード対応（手動切替機能付き）
     - ライトモードとダークモードの2つのモードを手動で切り替え可能
     - ユーザーの選択はローカルストレージに保存され、ページ再読み込み時も維持されます
-- TypeScriptによる型安全性
-- モダンなUI/UXデザイン
+- レスポンシブデザイン対応
+
+## CSVフォーマット
+
+CSVファイルの1行目はヘッダー行として読み飛ばされます。
+2行目以降が収支データとして解析されます。
+
+| 列 | 項目 | 形式 | 必須 |
+|---|---|---|---|
+| 1 | 日付 | `YYYY-MM-DD` | ○ |
+| 2 | カテゴリ | 下記参照 | ○ |
+| 3 | 種別 | `収入` または `支出` | ○ |
+| 4 | 金額 | 正の整数 | ○ |
+| 5 | メモ | 任意文字列 | |
+
+**収入カテゴリ:** `給与`、`副業`
+
+**支出カテゴリ:** `食料費`、`住宅費`、`光熱費`、`通信費`、`交通費`、`日用品`、`医療費`、`娯楽費`、`投資額`、`保険料`、`特別費`、`交際費`、`美容費`、`教養費`、`その他`
+
+サンプルCSVファイルは `public/sample.csv` を参照してください。
 
 ## 始め方
 
@@ -108,61 +132,45 @@ pnpm start
 ## プロジェクト構造
 
 ```
-├── lib/
-│   └── database.ts          # SQLiteデータベース接続・操作
+├── public/
+│   ├── data/
+│   │   └── household.csv    # デフォルト収支データCSV
+│   └── sample.csv           # サンプルCSVファイル
 ├── src/
-│   └── app/
-│       ├── api/
-│       │   └── message/
-│       │       └── route.ts # APIエンドポイント
-│       ├── components/      # Reactコンポーネント
-│       │   ├── DarkModeProvider.tsx  # ダークモードProvider
-│       │   └── Header.tsx   # ヘッダーコンポーネント
-│       ├── globals.css      # グローバルスタイル
-│       ├── layout.tsx       # アプリケーションレイアウト
-│       └── page.tsx         # メインページコンポーネント
-├── data/                    # SQLiteデータベースファイル（自動生成）
+│   ├── app/
+│   │   ├── components/      # Reactコンポーネント
+│   │   │   ├── CategoryTable.tsx    # カテゴリ別支出一覧テーブル
+│   │   │   ├── CsvUploader.tsx      # CSVアップローダー
+│   │   │   ├── DarkModeToggle.tsx   # ダークモード切替ボタン
+│   │   │   ├── ExpensePieChart.tsx  # 支出割合円グラフ
+│   │   │   ├── Header.tsx           # ヘッダーコンポーネント
+│   │   │   ├── SummaryCards.tsx     # サマリーカード
+│   │   │   └── TransactionTable.tsx # 収支一覧テーブル
+│   │   ├── upload/
+│   │   │   └── page.tsx     # CSVアップロードページ（/upload）
+│   │   ├── globals.css      # グローバルスタイル
+│   │   ├── layout.tsx       # アプリケーションレイアウト
+│   │   └── page.tsx         # ホームページ（/）
+│   └── lib/
+│       ├── constants.ts     # 収入・支出カテゴリ定数と型定義
+│       └── csv.ts           # CSV読み込み・バリデーション共通ユーティリティ
+├── __tests__/               # テストファイル
 ├── package.json
 ├── next.config.ts
-├── tailwind.config.ts
 └── tsconfig.json
 ```
 
-## API エンドポイント
-
-### GET /api/message
-
-データベースから最新のメッセージを取得します。
-
-**レスポンス:**
-
-```json
-{
-  "message": "Hello, world."
-}
-```
-
-## データベース
-
-SQLiteデータベースは初回起動時に自動的に作成されます：
-
-- データベースファイル: `data/app.db`
-- テーブル: `messages`
-    - `id`: 自動増分プライマリーキー
-    - `content`: メッセージ内容
-    - `created_at`: 作成日時
-
 ## カスタマイズ
 
-### メッセージの変更
+### デフォルトデータの変更
 
-データベース内のメッセージを変更したい場合は、
-SQLiteクライアントを使用して `data/app.db` ファイル内の `messages` テーブルを編集してください。
+ホーム画面で自動読み込みされるCSVデータを変更したい場合は、
+`public/data/household.csv` を編集してください。
 
 ### スタイルの変更
 
 スタイルは Tailwind CSS を使用しています。
-`src/app/page.tsx` ファイル内のクラス名を変更することで、外観をカスタマイズできます。
+各コンポーネントファイル内のクラス名を変更することで、外観をカスタマイズできます。
 
 ## 開発
 
@@ -202,14 +210,21 @@ npm run test:coverage
 
 #### テストファイルの構成
 
-- `__tests__/lib/database.test.ts`: データベース機能のテスト
-- `__tests__/src/app/components/DarkModeProvider.test.tsx`: ダークモードProvider のテスト
+- `__tests__/csv.test.ts`: CSVバリデーションユーティリティのテスト
+- `__tests__/page.test.tsx`: ホームページのテスト
+- `__tests__/upload.test.tsx`: CSVアップロードページのテスト
+- `__tests__/src/app/components/CategoryTable.test.tsx`: カテゴリ別支出テーブルのテスト
+- `__tests__/src/app/components/CsvUploader.test.tsx`: CSVアップローダーのテスト
+- `__tests__/src/app/components/DarkModeToggle.test.tsx`: ダークモード切替ボタンのテスト
+- `__tests__/src/app/components/ExpensePieChart.test.tsx`: 支出割合円グラフのテスト
 - `__tests__/src/app/components/Header.test.tsx`: ヘッダーコンポーネントのテスト
+- `__tests__/src/app/components/SummaryCards.test.tsx`: サマリーカードのテスト
+- `__tests__/src/app/components/TransactionTable.test.tsx`: 収支一覧テーブルのテスト
 
 #### テストの特徴
 
-- **データベーステスト**: SQLiteを使用した実際のデータベース操作のテスト
 - **Reactコンポーネントテスト**: React Testing Library を使用したコンポーネントのレンダリングとインタラクションのテスト
+- **バリデーションテスト**: CSVの各種バリデーションロジックのユニットテスト
 - **モッキング**: localStorage や外部依存関係のモック
 - **カバレッジ**: コードカバレッジの測定と報告
 
@@ -265,10 +280,12 @@ CIでは以下のチェックが行われます：
 
 ## トラブルシューティング
 
-### データベース関連のエラー
+### CSVの読み込みエラー
 
-- `data/` フォルダが存在しない場合、自動的に作成されます
-- データベースファイルが破損した場合は、`data/app.db` を削除して再起動してください
+- CSVファイルが正しいフォーマット（日付,カテゴリ,種別,金額,メモ）になっているか確認してください
+- 日付は `YYYY-MM-DD` 形式で入力してください
+- カテゴリは定義済みのカテゴリ名を使用してください
+- 金額は正の整数で入力してください
 
 ### ポート競合
 
@@ -277,3 +294,4 @@ CIでは以下のチェックが行われます：
 ```bash
 npm run dev -- --port 3001
 ```
+
