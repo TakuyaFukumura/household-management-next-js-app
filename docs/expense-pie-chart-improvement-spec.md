@@ -172,10 +172,29 @@ function aggregateSmallSlices(entries: ChartEntry[], total: number): ChartEntry[
 ### 4.4 ホバーハイライト（3.2.3 の詳細）
 
 `activeIndex` を `useState` で管理し、`Pie` の `onMouseEnter` / `onMouseLeave` で更新します。  
-アクティブなスライスの `outerRadius` を 110 に拡大します。
+アクティブなスライスの外径拡大は `Cell` の `outerRadius` では制御できないため、  
+`Pie` の `activeIndex` プロパティと `activeShape` プロパティを組み合わせて実現します。
 
 ```tsx
-const [activeIndex, setActiveIndex] = useState<number | null>(null);
+const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+
+function renderActiveShape(props: {
+    cx: number; cy: number; innerRadius: number; outerRadius: number;
+    startAngle: number; endAngle: number; fill: string;
+}) {
+    const {cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill} = props;
+    return (
+        <Sector
+            cx={cx}
+            cy={cy}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius + 10}
+            startAngle={startAngle}
+            endAngle={endAngle}
+            fill={fill}
+        />
+    );
+}
 
 // ...
 
@@ -186,17 +205,21 @@ const [activeIndex, setActiveIndex] = useState<number | null>(null);
     innerRadius={60}
     outerRadius={100}
     dataKey="value"
+    activeIndex={activeIndex}
+    activeShape={renderActiveShape}
     onMouseEnter={(_, index) => setActiveIndex(index)}
-    onMouseLeave={() => setActiveIndex(null)}
+    onMouseLeave={() => setActiveIndex(undefined)}
 >
     {data.map((_, index) => (
-        <Cell
-            key={`cell-${index}`}
-            fill={COLORS[index % COLORS.length]}
-            outerRadius={activeIndex === index ? 110 : 100}
-        />
+        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
     ))}
 </Pie>
+```
+
+`Sector` は `recharts` からインポートします。
+
+```typescript
+import {Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
 ```
 
 ---
