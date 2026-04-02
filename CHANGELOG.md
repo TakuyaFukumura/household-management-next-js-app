@@ -7,9 +7,20 @@
 
 ## [Unreleased]
 
+### 追加
+
+- `src/lib/csv.ts`: `Transaction`・`ValidationError`インターフェースおよび`validateRow()`関数を共通ユーティリティとして切り出し
+- `public/data/household.csv`: アプリ内デフォルトデータCSVファイル（自動読み込み用）
+- `src/app/upload/page.tsx`: CSVアップロード専用ページ（`/upload`）
+
 ### 変更
 
-- ここに書く
+- `src/app/page.tsx`: ページ表示時に`fetch`で`/data/household.csv`を自動読み込みするよう変更。CSVアップローダーUIを削除し、`/upload`ページへのナビゲーションリンクを追加
+- `src/app/components/CsvUploader.tsx`: `Transaction`・`ValidationError`・`validateRow`を`src/lib/csv.ts`から参照するよう変更
+
+### 削除
+
+- `docs/data-loading-method-change.md`: 実装完了のため削除
 
 ## [0.2.0] - 2025-01-01
 

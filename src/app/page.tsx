@@ -1,7 +1,9 @@
 'use client';
 
-import React, {useState} from 'react';
-import CsvUploader, {Transaction, ValidationError} from './components/CsvUploader';
+import React, {useEffect, useState} from 'react';
+import Papa from 'papaparse';
+import Link from 'next/link';
+import {Transaction, ValidationError, validateRow} from '@/lib/csv';
 import SummaryCards from './components/SummaryCards';
 import TransactionTable from './components/TransactionTable';
 import CategoryTable from './components/CategoryTable';
@@ -11,29 +13,75 @@ export default function Home() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [errors, setErrors] = useState<ValidationError[]>([]);
     const [hasLoaded, setHasLoaded] = useState(false);
+    const [fetchError, setFetchError] = useState<string | null>(null);
 
-    const handleDataLoaded = (txs: Transaction[], errs: ValidationError[]) => {
-        setTransactions(txs);
-        setErrors(errs);
-        setHasLoaded(true);
-    };
+    useEffect(() => {
+        fetch('/data/household.csv')
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`CSVファイルの取得に失敗しました: ${res.status}`);
+                }
+                return res.text();
+            })
+            .then((csvText) => {
+                Papa.parse<string[]>(csvText, {
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        const rows = results.data;
+                        const txs: Transaction[] = [];
+                        const errs: ValidationError[] = [];
+
+                        for (const parseError of results.errors ?? []) {
+                            errs.push({
+                                row: (parseError.row ?? 0) + 1,
+                                message: `CSVパースエラー: ${parseError.message}`,
+                            });
+                        }
+
+                        for (let i = 1; i < rows.length; i++) {
+                            const {transaction, error} = validateRow(rows[i], i + 1);
+                            if (transaction) {
+                                txs.push(transaction);
+                            } else if (error) {
+                                errs.push(error);
+                            }
+                        }
+
+                        setTransactions(txs);
+                        setErrors(errs);
+                        setHasLoaded(true);
+                    },
+                });
+            })
+            .catch((e: unknown) => {
+                setFetchError(e instanceof Error ? e.message : 'CSVファイルの読み込みに失敗しました');
+                setHasLoaded(true);
+            });
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-50">
             <header className="bg-white shadow-sm">
-                <div className="max-w-6xl mx-auto px-4 py-4">
+                <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-gray-800">家計簿アプリ</h1>
+                    <Link href="/upload" className="text-sm text-blue-500 hover:underline">
+                        CSVをアップロード
+                    </Link>
                 </div>
             </header>
 
             <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-                <CsvUploader onDataLoaded={handleDataLoaded}/>
-                <p className="text-sm text-gray-400 text-center">
-                    サンプルCSVファイル:{' '}
-                    <a href="/sample.csv" download className="text-blue-500 hover:underline">
-                        sample.csv をダウンロード
-                    </a>
-                </p>
+                {!hasLoaded && (
+                    <div className="text-center py-16 text-gray-400 text-lg">
+                        データを読み込み中...
+                    </div>
+                )}
+
+                {fetchError && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p className="text-red-700 font-semibold">{fetchError}</p>
+                    </div>
+                )}
 
                 {errors.length > 0 && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -46,11 +94,7 @@ export default function Home() {
                     </div>
                 )}
 
-                {!hasLoaded ? (
-                    <div className="text-center py-16 text-gray-400 text-lg">
-                        CSVファイルを読み込んでください
-                    </div>
-                ) : (
+                {hasLoaded && !fetchError && (
                     <>
                         <SummaryCards transactions={transactions}/>
 
