@@ -1,75 +1,67 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import CsvUploader, {Transaction, ValidationError} from './components/CsvUploader';
+import SummaryCards from './components/SummaryCards';
+import TransactionTable from './components/TransactionTable';
+import CategoryTable from './components/CategoryTable';
+import ExpensePieChart from './components/ExpensePieChart';
 
 export default function Home() {
-    const [message, setMessage] = useState<string>('読み込み中...');
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [errors, setErrors] = useState<ValidationError[]>([]);
+    const [hasLoaded, setHasLoaded] = useState(false);
 
-    useEffect(() => {
-        const fetchMessage = async () => {
-            try {
-                const response = await fetch('/api/message');
-                if (!response.ok) {
-                    throw new Error('メッセージの取得に失敗しました');
-                }
-                const data = await response.json();
-                setMessage(data.message);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : '予期しないエラーが発生しました');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchMessage();
-    }, []);
-
-    let content;
-    if (loading) {
-        content = (
-            <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span className="ml-2 text-gray-600 dark:text-gray-400">読み込み中...</span>
-            </div>
-        );
-    } else if (error) {
-        content = (
-            <div className="text-red-600 dark:text-red-400 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                エラー: {error}
-            </div>
-        );
-    } else {
-        content = (
-            <div
-                className="text-2xl font-semibold text-blue-600 dark:text-blue-400 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-700">
-                {message}
-            </div>
-        );
-    }
+    const handleDataLoaded = (txs: Transaction[], errs: ValidationError[]) => {
+        setTransactions(txs);
+        setErrors(errs);
+        setHasLoaded(true);
+    };
 
     return (
-        <div
-            className="font-sans flex items-center justify-center min-h-[calc(100vh-4rem)] bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-            <main className="text-center p-8">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 max-w-md mx-auto">
-                    <h1 className="text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
-                        household-management-next-js-app
-                    </h1>
-
-                    <div className="mb-8">
-                        {content}
-                    </div>
-
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        このメッセージはSQLiteデータベースから取得されています
-                    </p>
-
-                    <div className="text-xs text-gray-400 dark:text-gray-500">
-                        Next.js + TypeScript + Tailwind CSS + SQLite
-                    </div>
+        <div className="min-h-screen bg-gray-50">
+            <header className="bg-white shadow-sm">
+                <div className="max-w-6xl mx-auto px-4 py-4">
+                    <h1 className="text-2xl font-bold text-gray-800">家計簿アプリ</h1>
                 </div>
+            </header>
+
+            <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+                <CsvUploader onDataLoaded={handleDataLoaded}/>
+                <p className="text-sm text-gray-400 text-center">
+                    サンプルCSVファイル:{' '}
+                    <a href="/sample.csv" download className="text-blue-500 hover:underline">
+                        sample.csv をダウンロード
+                    </a>
+                </p>
+
+                {errors.length > 0 && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-700 font-semibold mb-2">バリデーションエラー ({errors.length}件)</p>
+                        <ul className="list-disc list-inside text-sm text-yellow-600 space-y-1">
+                            {errors.map((e, index) => (
+                                <li key={`${e.row}-${index}`}>{e.row}行目: {e.message}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {!hasLoaded ? (
+                    <div className="text-center py-16 text-gray-400 text-lg">
+                        CSVファイルを読み込んでください
+                    </div>
+                ) : (
+                    <>
+                        <SummaryCards transactions={transactions}/>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <CategoryTable transactions={transactions}/>
+                            <ExpensePieChart transactions={transactions}/>
+                        </div>
+
+                        <TransactionTable transactions={transactions}/>
+                    </>
+                )}
             </main>
         </div>
     );
