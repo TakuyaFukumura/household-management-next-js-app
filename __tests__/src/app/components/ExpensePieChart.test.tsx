@@ -18,8 +18,12 @@ jest.mock('recharts', () => ({
         </div>
     ),
     Cell: () => <div/>,
-    Legend: () => <div data-testid="legend"/>,
+    Label: () => <div data-testid="label"/>,
+    Legend: ({content}: {content?: (props: unknown) => React.ReactNode}) => (
+        <div data-testid="legend">{content ? content({payload: []}) : null}</div>
+    ),
     Tooltip: () => <div data-testid="tooltip"/>,
+    Sector: () => <div data-testid="sector"/>,
 }));
 
 const transactions: Transaction[] = [
@@ -50,6 +54,11 @@ describe('ExpensePieChart', () => {
             render(<ExpensePieChart transactions={transactions}/>);
             expect(screen.getByText('支出割合')).toBeInTheDocument();
         });
+
+        it('凡例が表示される', () => {
+            render(<ExpensePieChart transactions={transactions}/>);
+            expect(screen.getByTestId('legend')).toBeInTheDocument();
+        });
     });
 
     describe('データなしの場合', () => {
@@ -71,6 +80,30 @@ describe('ExpensePieChart', () => {
             ];
             render(<ExpensePieChart transactions={incomeOnly}/>);
             expect(screen.getByText('データがありません')).toBeInTheDocument();
+        });
+    });
+
+    describe('小スライス集約の場合', () => {
+        it('3%未満のカテゴリは「その他」に集約される', () => {
+            // 食料費: 97000 (97%), 交通費: 3000 (3%) → 交通費は MIN_PERCENTAGE=3 以上なので集約されない
+            // 食料費: 98000 (98%), 交通費: 1000 (1%) → 交通費は 3% 未満なので「その他」に集約される
+            const manyCategories: Transaction[] = [
+                {date: '2024-01-01', category: '食料費', type: '支出', amount: 98000, memo: ''},
+                {date: '2024-01-02', category: '交通費', type: '支出', amount: 1000, memo: ''},
+            ];
+            render(<ExpensePieChart transactions={manyCategories}/>);
+            expect(screen.queryByTestId('pie-entry-交通費')).not.toBeInTheDocument();
+            expect(screen.getByTestId('pie-entry-その他')).toBeInTheDocument();
+        });
+
+        it('3%以上のカテゴリは集約されない', () => {
+            const transactions2: Transaction[] = [
+                {date: '2024-01-01', category: '食料費', type: '支出', amount: 50000, memo: ''},
+                {date: '2024-01-02', category: '交通費', type: '支出', amount: 20000, memo: ''},
+            ];
+            render(<ExpensePieChart transactions={transactions2}/>);
+            expect(screen.getByTestId('pie-entry-食料費')).toBeInTheDocument();
+            expect(screen.getByTestId('pie-entry-交通費')).toBeInTheDocument();
         });
     });
 });
