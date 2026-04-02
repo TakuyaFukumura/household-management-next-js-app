@@ -45,15 +45,15 @@ export default function ExpensePieChart({transactions}: Props) {
 
     if (data.length === 0) {
         return (
-            <div className="bg-white rounded-lg shadow p-6 flex items-center justify-center h-64">
-                <p className="text-gray-400">データがありません</p>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex items-center justify-center h-64">
+                <p className="text-gray-400 dark:text-gray-500">データがありません</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-gray-700 font-semibold text-base mb-4">支出割合</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">支出割合</h2>
             <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                     <Pie
