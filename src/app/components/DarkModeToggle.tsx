@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 export default function DarkModeToggle() {
+    const [isMounted, setIsMounted] = useState(false);
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
@@ -14,6 +15,7 @@ export default function DarkModeToggle() {
         } else {
             document.documentElement.classList.remove('dark');
         }
+        setIsMounted(true);
     }, []);
 
     const toggleTheme = () => {
@@ -27,6 +29,8 @@ export default function DarkModeToggle() {
             localStorage.setItem('theme', 'light');
         }
     };
+
+    if (!isMounted) return null;
 
     return (
         <button

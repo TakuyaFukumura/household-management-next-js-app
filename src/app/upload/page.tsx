@@ -8,6 +8,7 @@ import SummaryCards from '../components/SummaryCards';
 import TransactionTable from '../components/TransactionTable';
 import CategoryTable from '../components/CategoryTable';
 import ExpensePieChart from '../components/ExpensePieChart';
+import DarkModeToggle from '../components/DarkModeToggle';
 
 export default function UploadPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -21,13 +22,16 @@ export default function UploadPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white shadow-sm">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+            <header className="bg-white dark:bg-gray-900 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800">CSVアップロード</h1>
-                    <Link href="/" className="text-sm text-blue-500 hover:underline">
-                        ホームへ戻る
-                    </Link>
+                    <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">CSVアップロード</h1>
+                    <div className="flex items-center gap-2">
+                        <Link href="/" className="text-sm text-blue-500 dark:text-blue-300 hover:underline">
+                            ホームへ戻る
+                        </Link>
+                        <DarkModeToggle/>
+                    </div>
                 </div>
             </header>
 
@@ -35,7 +39,7 @@ export default function UploadPage() {
                 <CsvUploader onDataLoaded={handleDataLoaded}/>
                 <p className="text-sm text-gray-400 text-center">
                     サンプルCSVファイル:{' '}
-                    <a href="/sample.csv" download className="text-blue-500 hover:underline">
+                    <a href="/sample.csv" download className="text-blue-500 dark:text-blue-300 hover:underline">
                         sample.csv をダウンロード
                     </a>
                 </p>

@@ -9,11 +9,13 @@ import DarkModeToggle from '@/app/components/DarkModeToggle';
 describe('DarkModeToggle', () => {
     beforeEach(() => {
         localStorage.clear();
+        (localStorage.getItem as jest.Mock).mockClear();
+        (localStorage.setItem as jest.Mock).mockClear();
         document.documentElement.classList.remove('dark');
     });
 
     afterEach(() => {
-        localStorage.clear();
+        jest.clearAllMocks();
         document.documentElement.classList.remove('dark');
     });
 
@@ -34,7 +36,7 @@ describe('DarkModeToggle', () => {
         fireEvent.click(button);
         expect(button).toHaveTextContent('🌙');
         expect(document.documentElement.classList.contains('dark')).toBe(true);
-        expect(localStorage.getItem('theme')).toBe('dark');
+        expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
     });
 
     it('ダークモード時にボタンをクリックするとライトモードへ切り替わる', () => {
@@ -44,7 +46,7 @@ describe('DarkModeToggle', () => {
         fireEvent.click(button);
         expect(button).toHaveTextContent('☀️');
         expect(document.documentElement.classList.contains('dark')).toBe(false);
-        expect(localStorage.getItem('theme')).toBe('light');
+        expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'light');
     });
 
     it('ライトモード時のaria-labelが正しい', () => {
