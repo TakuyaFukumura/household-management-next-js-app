@@ -2,12 +2,12 @@
 
 import React, {useEffect, useState} from 'react';
 import Papa from 'papaparse';
-import Link from 'next/link';
 import {Transaction, ValidationError, validateRow} from '@/lib/csv';
 import SummaryCards from './components/SummaryCards';
 import TransactionTable from './components/TransactionTable';
 import CategoryTable from './components/CategoryTable';
 import ExpensePieChart from './components/ExpensePieChart';
+import Header from './components/Header';
 
 export default function Home() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -60,15 +60,8 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white shadow-sm">
-                <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800">家計簿アプリ</h1>
-                    <Link href="/upload" className="text-sm text-blue-500 hover:underline">
-                        CSVをアップロード
-                    </Link>
-                </div>
-            </header>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+            <Header/>
 
             <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
                 {!hasLoaded && (
