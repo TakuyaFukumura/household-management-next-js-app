@@ -7,6 +7,21 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-02
+
+### 追加
+
+- `src/app/components/DarkModeToggle.tsx`: ダークモード切替ボタンコンポーネントを新規作成。`localStorage`にテーマを保存し、`<html>` 要素への `dark` クラス付与を管理
+- `src/app/components/Header.tsx`: ヘッダーコンポーネントを新規作成。アプリタイトル・CSVアップロードリンク・ダークモード切替ボタンを含む
+
+### 変更
+
+- `src/app/page.tsx`: インラインヘッダーを `Header` コンポーネントへ置き換え。ページ背景にダークモード対応カラー（`dark:bg-gray-950`）を追加
+
+### 削除
+
+- `docs/dark-mode-spec.md`: 実装完了のため削除
+
 ## [0.3.0] - 2026-04-02
 
 ### 追加
