@@ -88,8 +88,8 @@ function renderCustomLegend(props: {payload?: Array<{color: string; payload: Cha
     const {payload = []} = props;
     return (
         <ul className="mt-2 space-y-1 text-sm">
-            {payload.map((entry, index) => (
-                <li key={index} className="flex items-center gap-2">
+            {payload.map((entry) => (
+                <li key={entry.payload.name} className="flex items-center gap-2">
                     <span
                         className="inline-block w-3 h-3 rounded-full flex-shrink-0"
                         style={{backgroundColor: entry.color}}
