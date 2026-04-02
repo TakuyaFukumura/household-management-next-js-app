@@ -32,6 +32,11 @@ jest.mock('recharts', () => ({
     Tooltip: () => <div/>,
     Legend: () => <div/>,
     ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div>{children}</div>,
+    BarChart: ({children}: {children: React.ReactNode}) => <div data-testid="bar-chart">{children}</div>,
+    Bar: () => <div/>,
+    CartesianGrid: () => <div/>,
+    XAxis: () => <div/>,
+    YAxis: () => <div/>,
 }));
 
 const SAMPLE_CSV = [

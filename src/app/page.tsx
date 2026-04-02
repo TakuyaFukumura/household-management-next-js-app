@@ -7,6 +7,7 @@ import SummaryCards from './components/SummaryCards';
 import TransactionTable from './components/TransactionTable';
 import CategoryTable from './components/CategoryTable';
 import ExpensePieChart from './components/ExpensePieChart';
+import IncomeExpenseBarChart from './components/IncomeExpenseBarChart';
 import Header from './components/Header';
 import MonthNavigator from './components/MonthNavigator';
 
@@ -137,6 +138,8 @@ export default function Home() {
                                     <CategoryTable transactions={filteredTransactions}/>
                                     <ExpensePieChart transactions={filteredTransactions}/>
                                 </div>
+
+                                <IncomeExpenseBarChart transactions={filteredTransactions}/>
 
                                 <TransactionTable transactions={filteredTransactions}/>
                             </>
