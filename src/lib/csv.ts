@@ -2,17 +2,23 @@
  * CSV読み込み・バリデーション共通ユーティリティ
  */
 
-export interface Transaction {
-    date: string;
-    category: string;
-    type: '収入' | '支出';
-    amount: number;
-    memo: string;
-}
+import {ExpenseCategory, EXPENSE_CATEGORIES, IncomeCategory, INCOME_CATEGORIES} from './constants';
+
+export type Transaction =
+    | {date: string; category: IncomeCategory; type: '収入'; amount: number; memo: string}
+    | {date: string; category: ExpenseCategory; type: '支出'; amount: number; memo: string};
 
 export interface ValidationError {
     row: number;
     message: string;
+}
+
+function isIncomeCategory(category: string): category is IncomeCategory {
+    return (INCOME_CATEGORIES as readonly string[]).includes(category);
+}
+
+function isExpenseCategory(category: string): category is ExpenseCategory {
+    return (EXPENSE_CATEGORIES as readonly string[]).includes(category);
 }
 
 export function validateRow(row: string[], rowIndex: number): {transaction: Transaction | null; error: ValidationError | null} {
@@ -35,8 +41,27 @@ export function validateRow(row: string[], rowIndex: number): {transaction: Tran
         return {transaction: null, error: {row: rowIndex, message: `金額が不正です: ${amountStr}`}};
     }
 
-    return {
-        transaction: {date, category, type, amount, memo: memo ?? ''},
-        error: null,
-    };
+    if (type === '収入') {
+        if (!isIncomeCategory(category)) {
+            return {
+                transaction: null,
+                error: {
+                    row: rowIndex,
+                    message: `収入カテゴリが不正です: ${category}。許可されているカテゴリ: ${INCOME_CATEGORIES.join(', ')}`,
+                },
+            };
+        }
+        return {transaction: {date, category, type, amount, memo: memo ?? ''}, error: null};
+    } else {
+        if (!isExpenseCategory(category)) {
+            return {
+                transaction: null,
+                error: {
+                    row: rowIndex,
+                    message: `支出カテゴリが不正です: ${category}。許可されているカテゴリ: ${EXPENSE_CATEGORIES.join(', ')}`,
+                },
+            };
+        }
+        return {transaction: {date, category, type, amount, memo: memo ?? ''}, error: null};
+    }
 }

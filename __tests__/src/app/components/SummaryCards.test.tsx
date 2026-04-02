@@ -9,7 +9,7 @@ import {Transaction} from '@/app/components/CsvUploader';
 
 const transactions: Transaction[] = [
     {date: '2024-01-01', category: '給与', type: '収入', amount: 300000, memo: ''},
-    {date: '2024-01-05', category: '食費', type: '支出', amount: 50000, memo: ''},
+    {date: '2024-01-05', category: '食料費', type: '支出', amount: 50000, memo: ''},
     {date: '2024-01-10', category: '交通費', type: '支出', amount: 20000, memo: ''},
 ];
 

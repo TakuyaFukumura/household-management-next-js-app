@@ -45,7 +45,7 @@ describe('CsvUploader', () => {
             const onDataLoaded = jest.fn();
             render(<CsvUploader onDataLoaded={onDataLoaded}/>);
 
-            const csv = 'date,category,type,amount,memo\n2024-01-01,食費,支出,5000,スーパー\n';
+            const csv = 'date,category,type,amount,memo\n2024-01-01,食料費,支出,5000,スーパー\n';
             const file = makeFile(csv);
             const input = document.querySelector('input[type="file"]') as HTMLInputElement;
 
@@ -60,7 +60,7 @@ describe('CsvUploader', () => {
             expect(transactions).toHaveLength(1);
             expect(transactions[0]).toMatchObject({
                 date: '2024-01-01',
-                category: '食費',
+                category: '食料費',
                 type: '支出',
                 amount: 5000,
                 memo: 'スーパー',
