@@ -91,7 +91,12 @@ export default function CsvUploader({onDataLoaded}: Props) {
         e.preventDefault();
         setIsDragging(false);
         const file = e.dataTransfer.files?.[0];
-        if (file) processFile(file);
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith('.csv') && file.type !== 'text/csv') {
+            onDataLoaded([], [{row: 0, message: 'CSVファイルのみアップロードできます'}]);
+            return;
+        }
+        processFile(file);
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {

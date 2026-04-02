@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
+import {Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip} from 'recharts';
 import {Transaction} from './CsvUploader';
 
 interface Props {
@@ -32,8 +32,12 @@ function buildChartData(transactions: Transaction[]): ChartEntry[] {
     }));
 }
 
-function renderCustomLabel({name, percent}: {name: string; percent: number}) {
-    return `${name} (${(percent * 100).toFixed(1)}%)`;
+function renderCustomLabel({name, percent}: {name?: string; percent?: number}) {
+    return `${name ?? ''} (${((percent ?? 0) * 100).toFixed(1)}%)`;
+}
+
+function formatTooltipValue(value: unknown) {
+    return typeof value === 'number' ? `¥${value.toLocaleString()}` : String(value ?? '');
 }
 
 export default function ExpensePieChart({transactions}: Props) {
@@ -50,23 +54,25 @@ export default function ExpensePieChart({transactions}: Props) {
     return (
         <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-gray-700 font-semibold text-base mb-4">支出割合</h2>
-            <PieChart width={400} height={300}>
-                <Pie
-                    data={data}
-                    cx={200}
-                    cy={130}
-                    outerRadius={100}
-                    dataKey="value"
-                    label={renderCustomLabel}
-                    labelLine={true}
-                >
-                    {data.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
-                    ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => `¥${value.toLocaleString()}`}/>
-                <Legend/>
-            </PieChart>
+            <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="45%"
+                        outerRadius={100}
+                        dataKey="value"
+                        label={renderCustomLabel}
+                        labelLine={true}
+                    >
+                        {data.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+                        ))}
+                    </Pie>
+                    <Tooltip formatter={formatTooltipValue}/>
+                    <Legend/>
+                </PieChart>
+            </ResponsiveContainer>
         </div>
     );
 }

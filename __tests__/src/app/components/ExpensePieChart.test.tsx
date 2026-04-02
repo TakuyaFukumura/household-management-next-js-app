@@ -8,6 +8,7 @@ import ExpensePieChart from '@/app/components/ExpensePieChart';
 import {Transaction} from '@/app/components/CsvUploader';
 
 jest.mock('recharts', () => ({
+    ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div data-testid="responsive-container">{children}</div>,
     PieChart: ({children}: {children: React.ReactNode}) => <div data-testid="pie-chart">{children}</div>,
     Pie: ({data}: {data: {name: string; value: number}[]}) => (
         <div data-testid="pie">
