@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-02
+
 ### 追加
 
 - `src/lib/csv.ts`: `Transaction`・`ValidationError`インターフェースおよび`validateRow()`関数を共通ユーティリティとして切り出し
