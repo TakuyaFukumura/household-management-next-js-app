@@ -40,7 +40,7 @@
 | カテゴリ名 | 説明 |
 |------------|------|
 | 住宅費 | 家賃・住宅ローン・管理費など |
-| 投資額 | 株式・投資信託・積立NISAなどへの投資。一般的な家計簿には無いカテゴリだが、このアプリでは支出の１つとして扱う |
+| 投資額 | 株式・投資信託・積立NISAなどへの投資。一般的な家計簿には無いカテゴリだが、このアプリでは支出の1つとして扱う |
 | 保険料 | 生命保険・医療保険・損害保険の保険料 |
 | 特別費 | 冠婚葬祭・旅行・家電購入など一時的な大きな支出 |
 | 交際費 | 飲み会・贈り物・会食など |
@@ -146,7 +146,7 @@ export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
 |-------------|----------|
 | `public/sample.csv` | 新規・変更後カテゴリを含むサンプルデータへ差し替え |
 | `public/data/household.csv` | 新規・変更後カテゴリを含むサンプルデータへ差し替え |
-| `src/lib/csv.ts` | `Transaction` の `category` フィールドの型を定数由来の型に変更 |
+| `src/lib/csv.ts` | `Transaction` の `category` フィールドの型を、`type`（収入 / 支出）の両方を取り得ることを踏まえた `IncomeCategory \| ExpenseCategory`（必要に応じて `type` に応じた条件付き型）に変更 |
 | `src/app/components/CsvUploader.tsx` | アップロード説明文のカテゴリ表記を更新（食費→食料費、娯楽→娯楽費） |
 
 ---
