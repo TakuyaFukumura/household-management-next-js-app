@@ -65,13 +65,13 @@ describe('validateRow', () => {
         it('収入種別で収入カテゴリ以外の場合はエラーを返す', () => {
             const result = validateRow(['2024-01-05', '食料費', '収入', '5000', ''], 2);
             expect(result.transaction).toBeNull();
-            expect(result.error?.message).toContain('カテゴリが不正です');
+            expect(result.error?.message).toContain('収入カテゴリが不正です');
         });
 
         it('支出種別で支出カテゴリ以外の場合はエラーを返す', () => {
             const result = validateRow(['2024-01-05', '給与', '支出', '5000', ''], 2);
             expect(result.transaction).toBeNull();
-            expect(result.error?.message).toContain('カテゴリが不正です');
+            expect(result.error?.message).toContain('支出カテゴリが不正です');
         });
 
         it('金額が0の場合はエラーを返す', () => {
