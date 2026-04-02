@@ -28,10 +28,11 @@ const BAR_COLORS: Record<string, string> = {
     支出: '#ef4444',
 };
 
-const LEGEND_PAYLOAD = [
-    {value: '収入', type: 'square' as const, color: '#22c55e'},
-    {value: '支出', type: 'square' as const, color: '#ef4444'},
-];
+const LEGEND_PAYLOAD = Object.entries(BAR_COLORS).map(([name, color]) => ({
+    value: name,
+    type: 'square' as const,
+    color,
+}));
 
 function buildChartData(transactions: Transaction[]): ChartEntry[] {
     const totalIncome = transactions
@@ -81,14 +82,14 @@ export default function IncomeExpenseBarChart({transactions}: Props) {
                     <YAxis
                         type="category"
                         dataKey="name"
-                        tick={{fill: '#E5E7EB'}}
+                        tick={{fill: '#6B7280'}}
                         axisLine={{stroke: '#4B5563'}}
                         tickLine={{stroke: '#4B5563'}}
                     />
                     <XAxis
                         type="number"
                         tickFormatter={formatXAxis}
-                        tick={{fill: '#E5E7EB'}}
+                        tick={{fill: '#6B7280'}}
                         axisLine={{stroke: '#4B5563'}}
                         tickLine={{stroke: '#4B5563'}}
                     />
@@ -100,7 +101,18 @@ export default function IncomeExpenseBarChart({transactions}: Props) {
                             border: '1px solid #4B5563',
                         }}
                     />
-                    <Legend payload={LEGEND_PAYLOAD}/>
+                    <Legend
+                        content={() => (
+                            <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '8px'}}>
+                                {LEGEND_PAYLOAD.map((entry) => (
+                                    <span key={entry.value} style={{display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#6B7280'}}>
+                                        <span style={{backgroundColor: entry.color, display: 'inline-block', width: '12px', height: '12px'}}/>
+                                        {entry.value}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    />
                     <Bar dataKey="value" name="金額">
                         {data.map((entry, index) => (
                             <Cell
