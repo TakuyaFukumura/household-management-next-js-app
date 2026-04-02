@@ -7,6 +7,20 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-02
+
+### 追加
+
+- `src/app/components/MonthNavigator.tsx`: 月ナビゲーターコンポーネントを新規作成。前月・翌月ボタンによる月移動と「YYYY年MM月」形式の年月表示を提供
+
+### 変更
+
+- `src/app/page.tsx`: 月別表示機能を追加。選択月の状態管理（`selectedMonth`）、月フィルタリング処理、`MonthNavigator` コンポーネントの組み込み、データが存在しない月の「データがありません」表示
+
+### 削除
+
+- `docs/monthly-display-spec.md`: 実装完了のため削除
+
 ## [0.5.0] - 2026-04-02
 
 ### 追加
