@@ -139,6 +139,20 @@ describe('Home（メインページ）', () => {
         expect(screen.getByRole('button', {name: /翌月/})).toBeInTheDocument();
     });
 
+    it('CSV読み込み後に最新月（2024年01月）が初期表示される', async () => {
+        (global.fetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            text: () => Promise.resolve(SAMPLE_CSV),
+        });
+
+        await act(async () => {
+            render(<Home/>);
+            await flushPromises();
+        });
+
+        expect(screen.getByText('2024年01月')).toBeInTheDocument();
+    });
+
     it('データが存在しない月を選択した場合「データがありません」が表示される', async () => {
         // SAMPLE_CSV のデータは 2024-01 のみなので、初期月が 2024-01 に設定される
         // その後「翌月」ボタンで 2024-02 に移動するとデータなし表示になる

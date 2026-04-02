@@ -22,18 +22,6 @@ export default function Home() {
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
 
-    useEffect(() => {
-        if (!hasLoaded) return;
-        if (transactions.length === 0) {
-            setSelectedMonth(getCurrentMonth());
-            return;
-        }
-        const latest = [...transactions]
-            .sort((a, b) => b.date.localeCompare(a.date))[0].date
-            .slice(0, 7);
-        setSelectedMonth(latest);
-    }, [hasLoaded, transactions]);
-
     function handlePrevMonth() {
         const [year, month] = selectedMonth.split('-').map(Number);
         const d = new Date(year, month - 2);
@@ -84,6 +72,13 @@ export default function Home() {
 
                         setTransactions(txs);
                         setErrors(errs);
+                        if (txs.length > 0) {
+                            const latestDate = txs.reduce(
+                                (max, t) => (t.date > max ? t.date : max),
+                                txs[0].date
+                            );
+                            setSelectedMonth(latestDate.slice(0, 7));
+                        }
                         setHasLoaded(true);
                     },
                 });
