@@ -60,12 +60,23 @@ if (!Number.isInteger(amount) || amount < 1) {
 現状は正規表現 `/^\d{4}-\d{2}-\d{2}$/` で書式のみを検証していますが、存在しない日付（例：`2024-02-31`）もバリデーションを通過してしまいます。
 
 **改修提案：**  
-`Date` オブジェクトを利用した存在チェックを追加することを検討します。
+`Date` オブジェクトで存在チェックを行う場合も、`new Date(date)` のような文字列パースに直接依存するのではなく、`YYYY-MM-DD` を年・月・日に分解し、`Date.UTC(year, month - 1, day)` で生成した結果と各要素を比較することで、実行環境ごとの解釈差やタイムゾーン差の影響を避けます。
 
 ```typescript
 // 改修案（参考）
-const parsed = new Date(date);
-if (isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+const [yearStr, monthStr, dayStr] = date.split('-');
+const year = Number(yearStr);
+const month = Number(monthStr);
+const day = Number(dayStr);
+
+const parsed = new Date(Date.UTC(year, month - 1, day));
+const isValidDate =
+    !Number.isNaN(parsed.getTime()) &&
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day;
+
+if (!isValidDate) {
     return {transaction: null, error: {row: rowIndex, message: `日付が存在しません: ${date}`}};
 }
 ```
