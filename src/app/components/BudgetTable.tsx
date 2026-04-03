@@ -1,59 +1,26 @@
 import React from 'react';
 import type {BudgetEntry} from '@/lib/budget';
-import type {Transaction} from '@/lib/csv';
 
 interface Props {
     readonly budgetEntries: BudgetEntry[];
-    readonly transactions: Transaction[];
 }
 
 interface TableRow {
     category: string;
     type: '収入' | '支出';
     budget: number;
-    actual: number;
-    diff: number;
 }
 
-function buildTableRows(budgetEntries: BudgetEntry[], transactions: Transaction[]): TableRow[] {
-    const actualMap = new Map<string, number>();
-    for (const t of transactions) {
-        actualMap.set(t.category, (actualMap.get(t.category) ?? 0) + t.amount);
-    }
-
-    return budgetEntries.map((e) => {
-        const actual = actualMap.get(e.category) ?? 0;
-        const diff = actual - e.amount;
-        return {
-            category: e.category,
-            type: e.type,
-            budget: e.amount,
-            actual,
-            diff,
-        };
-    });
+function buildTableRows(budgetEntries: BudgetEntry[]): TableRow[] {
+    return budgetEntries.map((e) => ({
+        category: e.category,
+        type: e.type,
+        budget: e.amount,
+    }));
 }
 
-function getDiffColor(row: TableRow): string {
-    if (row.type === '収入') {
-        return row.diff >= 0
-            ? 'text-green-600 dark:text-green-400'
-            : 'text-red-600 dark:text-red-400';
-    } else {
-        return row.diff <= 0
-            ? 'text-green-600 dark:text-green-400'
-            : 'text-red-600 dark:text-red-400';
-    }
-}
-
-function formatDiff(diff: number): string {
-    if (diff > 0) return `+¥${diff.toLocaleString()}`;
-    if (diff < 0) return `-¥${Math.abs(diff).toLocaleString()}`;
-    return '¥0';
-}
-
-export default function BudgetTable({budgetEntries, transactions}: Props) {
-    const rows = buildTableRows(budgetEntries, transactions);
+export default function BudgetTable({budgetEntries}: Props) {
+    const rows = buildTableRows(budgetEntries);
     const incomeRows = rows.filter((r) => r.type === '収入');
     const expenseRows = rows.filter((r) => r.type === '支出');
     const orderedRows = [...incomeRows, ...expenseRows];
@@ -67,8 +34,6 @@ export default function BudgetTable({budgetEntries, transactions}: Props) {
                         <th scope="col" className="px-4 py-3 text-left">カテゴリ</th>
                         <th scope="col" className="px-4 py-3 text-left">種別</th>
                         <th scope="col" className="px-4 py-3 text-right">予算金額</th>
-                        <th scope="col" className="px-4 py-3 text-right">実績金額</th>
-                        <th scope="col" className="px-4 py-3 text-right">差額</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,15 +42,11 @@ export default function BudgetTable({budgetEntries, transactions}: Props) {
                             <td className="px-4 py-3">{row.category}</td>
                             <td className="px-4 py-3">{row.type}</td>
                             <td className="px-4 py-3 text-right">¥{row.budget.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-right">¥{row.actual.toLocaleString()}</td>
-                            <td className={`px-4 py-3 text-right ${getDiffColor(row)}`}>
-                                {formatDiff(row.diff)}
-                            </td>
                         </tr>
                     ))}
                     {orderedRows.length === 0 && (
                         <tr>
-                            <td colSpan={5} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">データがありません</td>
+                            <td colSpan={3} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">データがありません</td>
                         </tr>
                     )}
                 </tbody>
