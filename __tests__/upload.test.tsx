@@ -28,6 +28,13 @@ jest.mock('next/link', () => {
     return MockLink;
 });
 
+// Headerコンポーネントのモック
+jest.mock('@/app/components/Header', () => {
+    const MockHeader = () => <header data-testid="mock-header"><nav><a href="/">ホーム</a></nav></header>;
+    MockHeader.displayName = 'MockHeader';
+    return MockHeader;
+});
+
 // recharts のモック
 jest.mock('recharts', () => ({
     PieChart: ({children}: {children: React.ReactNode}) => <div data-testid="pie-chart">{children}</div>,
@@ -53,9 +60,14 @@ describe('UploadPage（CSVアップロードページ）', () => {
         expect(screen.getByRole('button', {name: 'CSVファイルをアップロード'})).toBeInTheDocument();
     });
 
-    it('ホームへ戻るリンクが表示される', () => {
+    it('共通ヘッダーが表示される', () => {
         render(<UploadPage/>);
-        expect(screen.getByRole('link', {name: 'ホームへ戻る'})).toBeInTheDocument();
+        expect(screen.getByTestId('mock-header')).toBeInTheDocument();
+    });
+
+    it('ページ説明文が表示される', () => {
+        render(<UploadPage/>);
+        expect(screen.getByText('CSV ファイルをアップロードして収支データを確認できます。')).toBeInTheDocument();
     });
 
     it('サンプルCSVダウンロードリンクが表示される', () => {

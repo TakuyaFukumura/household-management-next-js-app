@@ -1,14 +1,13 @@
 'use client';
 
 import React, {useState} from 'react';
-import Link from 'next/link';
 import CsvUploader from '../components/CsvUploader';
 import {Transaction, ValidationError} from '@/lib/csv';
 import SummaryCards from '../components/SummaryCards';
 import TransactionTable from '../components/TransactionTable';
 import CategoryTable from '../components/CategoryTable';
 import ExpensePieChart from '../components/ExpensePieChart';
-import DarkModeToggle from '../components/DarkModeToggle';
+import Header from '../components/Header';
 
 export default function UploadPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -23,19 +22,16 @@ export default function UploadPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <header className="bg-white dark:bg-gray-900 shadow-sm">
-                <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">CSVアップロード</h1>
-                    <div className="flex items-center gap-2">
-                        <Link href="/" className="text-sm text-blue-500 dark:text-blue-300 hover:underline">
-                            ホームへ戻る
-                        </Link>
-                        <DarkModeToggle/>
-                    </div>
-                </div>
-            </header>
+            <Header />
 
             <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">CSVアップロード</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        CSV ファイルをアップロードして収支データを確認できます。
+                    </p>
+                </div>
+
                 <CsvUploader onDataLoaded={handleDataLoaded}/>
                 <p className="text-sm text-gray-400 text-center">
                     サンプルCSVファイル:{' '}

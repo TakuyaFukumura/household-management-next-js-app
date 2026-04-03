@@ -107,7 +107,7 @@ describe('Home（メインページ）', () => {
     it('/uploadへのナビゲーションリンクが表示される', () => {
         (global.fetch as jest.Mock).mockReturnValue(new Promise(() => {}));
         render(<Home/>);
-        expect(screen.getByRole('link', {name: 'CSVをアップロード'})).toBeInTheDocument();
+        expect(screen.getByRole('link', {name: /CSVをアップロード/})).toBeInTheDocument();
     });
 
     it('バリデーションエラーがある場合はエラー一覧が表示される', async () => {
