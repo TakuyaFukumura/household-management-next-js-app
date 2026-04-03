@@ -7,6 +7,21 @@
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-04-03
+
+### 変更
+
+- `src/app/components/ExpensePieChart.tsx`: 支出割合グラフの改善
+  - 凡例を `ResponsiveContainer` 外の独立した `<ul>` リストとして描画するよう変更し、カテゴリ数が多い場合のグラフ見切れを解消
+  - グラフ本体の高さを `350px` から `260px` に調整
+  - `aggregateSmallSlices` 関数の早期 return を排除し、すべての分岐で金額降順ソートを適用するようリファクタリング
+  - 配色を彩度の高い原色系 8 色から落ち着いたトーンの 15 色パレット（Tableau カラーパレット準拠）へ変更
+- `package.json`: バージョンを `0.9.0` から `0.10.0` に更新
+
+### 削除
+
+- `docs/expense-pie-chart-spec.md`: 実装完了のため削除
+
 ## [0.9.0] - 2026-04-02
 
 ### 追加

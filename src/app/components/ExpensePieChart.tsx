@@ -1,15 +1,31 @@
 'use client';
 
 import React, {useState} from 'react';
-import type {DefaultLegendContentProps, PieSectorShapeProps} from 'recharts';
-import {Label, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
+import type {PieSectorShapeProps} from 'recharts';
+import {Label, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
 import type {Transaction} from '@/app/components/CsvUploader';
 
 interface Props {
     readonly transactions: Transaction[];
 }
 
-const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+const COLORS = [
+    '#4e79a7',
+    '#59a14f',
+    '#e15759',
+    '#76b7b2',
+    '#edc948',
+    '#b07aa1',
+    '#ff9da7',
+    '#9c755f',
+    '#bab0ac',
+    '#499894',
+    '#f1ce63',
+    '#a0cbe8',
+    '#ffbe7d',
+    '#8cd17d',
+    '#b6992d',
+];
 
 const MIN_PERCENTAGE = 3;
 
@@ -45,25 +61,31 @@ function aggregateSmallSlices(entries: ChartEntry[], total: number): ChartEntry[
     const main = entries.filter((e) => e.percentage >= MIN_PERCENTAGE);
     const small = entries.filter((e) => e.percentage < MIN_PERCENTAGE);
 
-    if (small.length === 0) return main;
+    let result: ChartEntry[];
 
-    const otherValue = small.reduce((sum, e) => sum + e.value, 0);
-    const existingOther = main.find((e) => e.name === 'その他');
+    if (small.length === 0) {
+        result = main;
+    } else {
+        const otherValue = small.reduce((sum, e) => sum + e.value, 0);
+        const existingOther = main.find((e) => e.name === 'その他');
 
-    if (existingOther) {
-        existingOther.value += otherValue;
-        existingOther.percentage = total > 0 ? (existingOther.value / total) * 100 : 0;
-        return main;
+        if (existingOther) {
+            existingOther.value += otherValue;
+            existingOther.percentage = total > 0 ? (existingOther.value / total) * 100 : 0;
+            result = main;
+        } else {
+            result = [
+                ...main,
+                {
+                    name: 'その他',
+                    value: otherValue,
+                    percentage: total > 0 ? (otherValue / total) * 100 : 0,
+                },
+            ];
+        }
     }
 
-    return [
-        ...main,
-        {
-            name: 'その他',
-            value: otherValue,
-            percentage: total > 0 ? (otherValue / total) * 100 : 0,
-        },
-    ];
+    return result.sort((a, b) => b.value - a.value);
 }
 
 function renderPieShape(props: PieSectorShapeProps) {
@@ -78,28 +100,6 @@ function renderPieShape(props: PieSectorShapeProps) {
             endAngle={endAngle}
             fill={fill}
         />
-    );
-}
-
-function renderCustomLegend(props: DefaultLegendContentProps) {
-    const {payload = []} = props;
-    return (
-        <ul className="mt-2 space-y-1 text-sm">
-            {payload.map((entry) => {
-                const chartEntry = entry.payload as ChartEntry;
-                return (
-                    <li key={chartEntry.name} className="flex items-center gap-2">
-                        <span
-                            className="inline-block w-3 h-3 rounded-full shrink-0"
-                            style={{backgroundColor: entry.color}}
-                        />
-                        <span className="text-gray-700 dark:text-gray-300">
-                            {chartEntry.name}：¥{chartEntry.value.toLocaleString()}（{chartEntry.percentage.toFixed(1)}%）
-                        </span>
-                    </li>
-                );
-            })}
-        </ul>
     );
 }
 
@@ -138,12 +138,12 @@ export default function ExpensePieChart({transactions}: Readonly<Props>) {
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">支出割合</h2>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
                     <Pie
                         data={data}
                         cx="50%"
-                        cy="45%"
+                        cy="50%"
                         innerRadius={60}
                         outerRadius={100}
                         dataKey="value"
@@ -157,9 +157,21 @@ export default function ExpensePieChart({transactions}: Readonly<Props>) {
                         />
                     </Pie>
                     <Tooltip formatter={formatTooltipValue}/>
-                    <Legend content={renderCustomLegend}/>
                 </PieChart>
             </ResponsiveContainer>
+            <ul className="mt-3 space-y-1 text-sm">
+                {data.map((entry) => (
+                    <li key={entry.name} className="flex items-center gap-2">
+                        <span
+                            className="inline-block w-3 h-3 rounded-full shrink-0"
+                            style={{backgroundColor: entry.fill}}
+                        />
+                        <span className="text-gray-700 dark:text-gray-300">
+                            {entry.name}：¥{entry.value.toLocaleString()}（{entry.percentage.toFixed(1)}%）
+                        </span>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
