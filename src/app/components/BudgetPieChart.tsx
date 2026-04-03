@@ -1,8 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import type {DefaultLegendContentProps, PieSectorShapeProps} from 'recharts';
-import {Label, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
+import type {PieSectorShapeProps} from 'recharts';
+import {Label, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {
@@ -76,28 +76,6 @@ function renderPieShape(props: PieSectorShapeProps) {
     );
 }
 
-function renderCustomLegend(props: DefaultLegendContentProps) {
-    const {payload = []} = props;
-    return (
-        <ul className="mt-2 space-y-1 text-sm">
-            {payload.map((entry) => {
-                const chartEntry = entry.payload as ChartEntry;
-                return (
-                    <li key={chartEntry.name} className="flex items-center gap-2">
-                        <span
-                            className="inline-block w-3 h-3 rounded-full shrink-0"
-                            style={{backgroundColor: entry.color}}
-                        />
-                        <span className="text-gray-700 dark:text-gray-300">
-                            {chartEntry.name}：¥{chartEntry.value.toLocaleString()}（{chartEntry.percentage.toFixed(1)}%）
-                        </span>
-                    </li>
-                );
-            })}
-        </ul>
-    );
-}
-
 function formatTooltipValue(value: unknown): string {
     if (typeof value === 'number') return `¥${value.toLocaleString()}`;
     if (typeof value === 'string') return value;
@@ -117,10 +95,12 @@ export default function BudgetPieChart({budgetEntries}: Props) {
 
     const rawData = buildChartData(budgetEntries);
     const total = rawData.reduce((sum, e) => sum + e.value, 0);
-    const data: ChartEntryWithFill[] = aggregateSmallSlices(rawData, total).map((entry, index) => ({
-        ...entry,
-        fill: COLORS[index % COLORS.length],
-    }));
+    const data: ChartEntryWithFill[] = aggregateSmallSlices(rawData, total)
+        .sort((a, b) => b.value - a.value)
+        .map((entry, index) => ({
+            ...entry,
+            fill: COLORS[index % COLORS.length],
+        }));
 
     if (data.length === 0) {
         return (
@@ -133,12 +113,12 @@ export default function BudgetPieChart({budgetEntries}: Props) {
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">支出予算の割合</h2>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                     <Pie
                         data={data}
                         cx="50%"
-                        cy="45%"
+                        cy="50%"
                         innerRadius={60}
                         outerRadius={100}
                         dataKey="value"
@@ -152,9 +132,21 @@ export default function BudgetPieChart({budgetEntries}: Props) {
                         />
                     </Pie>
                     <Tooltip formatter={formatTooltipValue}/>
-                    <Legend content={renderCustomLegend}/>
                 </PieChart>
             </ResponsiveContainer>
+            <ul className="mt-4 space-y-1 text-sm">
+                {data.map((entry) => (
+                    <li key={entry.name} className="flex items-center gap-2">
+                        <span
+                            className="inline-block w-3 h-3 rounded-full shrink-0"
+                            style={{backgroundColor: entry.fill}}
+                        />
+                        <span className="text-gray-700 dark:text-gray-300">
+                            {entry.name}：¥{entry.value.toLocaleString()}（{entry.percentage.toFixed(1)}%）
+                        </span>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

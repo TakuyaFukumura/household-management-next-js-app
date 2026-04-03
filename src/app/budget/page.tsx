@@ -5,10 +5,16 @@ import Papa from 'papaparse';
 import {BudgetEntry, BudgetValidationError, validateBudgetRow} from '@/lib/budget';
 import {Transaction, ValidationError, validateRow} from '@/lib/csv';
 import Header from '@/app/components/Header';
+import MonthNavigator from '@/app/components/MonthNavigator';
 import BudgetSummaryCards from '@/app/components/BudgetSummaryCards';
 import BudgetPieChart from '@/app/components/BudgetPieChart';
 import BudgetBarChart from '@/app/components/BudgetBarChart';
 import BudgetTable from '@/app/components/BudgetTable';
+
+function getCurrentMonth(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
 
 export default function BudgetPage() {
     const [budgetEntries, setBudgetEntries] = useState<BudgetEntry[]>([]);
@@ -20,6 +26,22 @@ export default function BudgetPage() {
     const [transactionErrors, setTransactionErrors] = useState<ValidationError[]>([]);
     const [transactionFetchError, setTransactionFetchError] = useState<string | null>(null);
     const [transactionLoaded, setTransactionLoaded] = useState(false);
+
+    const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
+
+    function handlePrevMonth() {
+        const [year, month] = selectedMonth.split('-').map(Number);
+        const d = new Date(year, month - 2);
+        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+
+    function handleNextMonth() {
+        const [year, month] = selectedMonth.split('-').map(Number);
+        const d = new Date(year, month);
+        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+
+    const filteredTransactions = transactions.filter((t) => t.date.startsWith(selectedMonth));
 
     useEffect(() => {
         fetch('/data/budget.csv')
@@ -99,6 +121,13 @@ export default function BudgetPage() {
 
                         setTransactions(txs);
                         setTransactionErrors(errs);
+                        if (txs.length > 0) {
+                            const latestDate = txs.reduce(
+                                (max, t) => (t.date > max ? t.date : max),
+                                txs[0].date
+                            );
+                            setSelectedMonth(latestDate.slice(0, 7));
+                        }
                         setTransactionLoaded(true);
                     },
                 });
@@ -158,10 +187,22 @@ export default function BudgetPage() {
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <BudgetPieChart budgetEntries={budgetEntries}/>
-                                    <BudgetBarChart budgetEntries={budgetEntries} transactions={transactions}/>
+                                    <BudgetBarChart budgetEntries={budgetEntries}/>
                                 </div>
 
-                                <BudgetTable budgetEntries={budgetEntries} transactions={transactions}/>
+                                <MonthNavigator
+                                    selectedMonth={selectedMonth}
+                                    onPrevMonth={handlePrevMonth}
+                                    onNextMonth={handleNextMonth}
+                                />
+
+                                {transactionFetchError ? (
+                                    <div className="text-center py-8 text-gray-400 text-sm">
+                                        実績データを取得できませんでした
+                                    </div>
+                                ) : (
+                                    <BudgetTable budgetEntries={budgetEntries} transactions={filteredTransactions}/>
+                                )}
                             </>
                         )}
                     </>

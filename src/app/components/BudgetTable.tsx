@@ -23,7 +23,7 @@ function buildTableRows(budgetEntries: BudgetEntry[], transactions: Transaction[
 
     return budgetEntries.map((e) => {
         const actual = actualMap.get(e.category) ?? 0;
-        const diff = e.type === '収入' ? actual - e.amount : e.amount - actual;
+        const diff = actual - e.amount;
         return {
             category: e.category,
             type: e.type,
@@ -36,11 +36,11 @@ function buildTableRows(budgetEntries: BudgetEntry[], transactions: Transaction[
 
 function getDiffColor(row: TableRow): string {
     if (row.type === '収入') {
-        return row.actual >= row.budget
+        return row.diff >= 0
             ? 'text-green-600 dark:text-green-400'
             : 'text-red-600 dark:text-red-400';
     } else {
-        return row.actual <= row.budget
+        return row.diff <= 0
             ? 'text-green-600 dark:text-green-400'
             : 'text-red-600 dark:text-red-400';
     }

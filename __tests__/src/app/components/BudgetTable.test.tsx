@@ -61,7 +61,7 @@ describe('BudgetTable', () => {
 
         it('支出が予算超過の場合は差額が赤色で表示される', () => {
             render(<BudgetTable budgetEntries={budgetEntries} transactions={transactions}/>);
-            const diffCell = screen.getByText('-¥5,000');
+            const diffCell = screen.getByText('+¥5,000');
             expect(diffCell).toHaveClass('text-red-600');
         });
     });

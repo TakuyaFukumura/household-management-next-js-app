@@ -13,7 +13,6 @@ jest.mock('recharts', () => ({
     Pie: ({children}: {children: React.ReactNode}) => <div data-testid="pie">{children}</div>,
     Cell: () => <div/>,
     Label: () => <div/>,
-    Legend: ({content}: {content: (props: unknown) => React.ReactNode}) => <div data-testid="legend">{content({payload: []})}</div>,
     Tooltip: () => <div data-testid="tooltip"/>,
     Sector: () => <div/>,
 }));
