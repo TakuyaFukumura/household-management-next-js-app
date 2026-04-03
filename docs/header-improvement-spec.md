@@ -2,7 +2,7 @@
 
 ## 1. 概要
 
-本ドキュメントは、共通ヘッダー（`Header.tsx`）および CSV アップロード画面（`upload/page.tsx`）のヘッダーに関する改善内容について仕様を定義します。  
+本ドキュメントは、共通ヘッダー（`src/app/components/Header.tsx`）および CSV アップロード画面（`src/app/upload/page.tsx`）のヘッダーに関する改善内容について仕様を定義します。  
 現状のヘッダーにはデザイン・UX 上の課題があるため、ユーザー体験の向上を目的として改修を行います。
 
 ---
@@ -93,7 +93,7 @@
 - ハンバーガーアイコンをタップするとドロワー（縦方向のメニュー）が開き、ナビゲーションリンクが縦並びで表示される。
 - 再度タップするとドロワーが閉じる。
 - メニューが開いている状態でリンクをクリックした場合も、メニューを閉じる。
-- 外部ライブラリを導入せず、React の `useState` フックとTailwind CSS のレスポンシブプレフィックス（`md:`）のみで実装する。
+- 外部ライブラリを導入せず、React の `useState` フックと Tailwind CSS のレスポンシブプレフィックス（`md:`）のみで実装する。
 
 #### 変更対象ファイル
 
@@ -136,9 +136,12 @@ export default function Header() {
             <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
                 {/* ハンバーガーボタン（md 未満でのみ表示） */}
                 <button
+                    type="button"
                     className="md:hidden mr-2 p-2 rounded-md text-gray-600 dark:text-gray-300
                                hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    aria-label="メニューを開く"
+                    aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+                    aria-expanded={menuOpen}
+                    aria-controls="mobile-menu"
                     onClick={() => setMenuOpen((prev) => !prev)}
                 >
                     {menuOpen ? '✕' : '☰'}
@@ -172,7 +175,7 @@ export default function Header() {
 
             {/* スマホ向けドロワーメニュー */}
             {menuOpen && (
-                <nav className="md:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-2 flex flex-col gap-1">
+                <nav id="mobile-menu" className="md:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-2 flex flex-col gap-1">
                     {NAV_LINKS.map(({ href, label }) => (
                         <Link
                             key={href}
