@@ -35,6 +35,20 @@ export function validateRow(row: string[], rowIndex: number): {
         return {transaction: null, error: {row: rowIndex, message: `日付の形式が不正です: ${date}`}};
     }
 
+    const [yearStr, monthStr, dayStr] = date.split('-');
+    const year = Number(yearStr);
+    const month = Number(monthStr);
+    const day = Number(dayStr);
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+    const isValidDate =
+        !Number.isNaN(parsed.getTime()) &&
+        parsed.getUTCFullYear() === year &&
+        parsed.getUTCMonth() === month - 1 &&
+        parsed.getUTCDate() === day;
+    if (!isValidDate) {
+        return {transaction: null, error: {row: rowIndex, message: `日付が存在しません: ${date}`}};
+    }
+
     if (type !== '収入' && type !== '支出') {
         return {transaction: null, error: {row: rowIndex, message: `種別が不正です: ${type}`}};
     }

@@ -24,6 +24,16 @@ describe('validateBudgetRow', () => {
                 amount: 50000,
             });
         });
+
+        it('予算金額が0の場合は有効として扱う', () => {
+            const result = validateBudgetRow(['給与', '収入', '0'], 2);
+            expect(result.error).toBeNull();
+            expect(result.entry).toEqual({
+                category: '給与',
+                type: '収入',
+                amount: 0,
+            });
+        });
     });
 
     describe('異常系', () => {
@@ -49,12 +59,6 @@ describe('validateBudgetRow', () => {
             const result = validateBudgetRow(['給与', '不明', '350000'], 2);
             expect(result.entry).toBeNull();
             expect(result.error?.message).toContain('種別が不正です');
-        });
-
-        it('予算金額が0の場合はエラーを返す', () => {
-            const result = validateBudgetRow(['給与', '収入', '0'], 2);
-            expect(result.entry).toBeNull();
-            expect(result.error?.message).toContain('予算金額が不正です');
         });
 
         it('予算金額が負の場合はエラーを返す', () => {

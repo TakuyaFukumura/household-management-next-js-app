@@ -41,7 +41,7 @@ export function validateBudgetRow(
     }
 
     const amount = Number(amountStr);
-    if (!Number.isInteger(amount) || amount < 1) {
+    if (!Number.isInteger(amount) || amount < 0) {
         return {entry: null, error: {row: rowIndex, message: `予算金額が不正です: ${amountStr}`}};
     }
 

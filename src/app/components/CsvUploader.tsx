@@ -15,6 +15,10 @@ export default function CsvUploader({onDataLoaded}: Props) {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const processFile = useCallback((file: File) => {
+        if (!file.name.toLowerCase().endsWith('.csv') && file.type !== 'text/csv') {
+            onDataLoaded([], [{row: 0, message: 'CSVファイルのみアップロードできます'}]);
+            return;
+        }
         Papa.parse<string[]>(file, {
             skipEmptyLines: true,
             complete: (results) => {
@@ -56,10 +60,6 @@ export default function CsvUploader({onDataLoaded}: Props) {
         setIsDragging(false);
         const file = e.dataTransfer.files?.[0];
         if (!file) return;
-        if (!file.name.toLowerCase().endsWith('.csv') && file.type !== 'text/csv') {
-            onDataLoaded([], [{row: 0, message: 'CSVファイルのみアップロードできます'}]);
-            return;
-        }
         processFile(file);
     };
 
