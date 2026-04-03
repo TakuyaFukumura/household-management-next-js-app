@@ -8,9 +8,10 @@ import BudgetBarChart from '@/app/components/BudgetBarChart';
 import type {BudgetEntry} from '@/lib/budget';
 
 jest.mock('recharts', () => ({
-    ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div data-testid="responsive-container">{children}</div>,
-    BarChart: ({children}: {children: React.ReactNode}) => <div data-testid="bar-chart">{children}</div>,
-    Bar: ({children}: {children: React.ReactNode}) => <div data-testid="bar">{children}</div>,
+    ResponsiveContainer: ({children}: { children: React.ReactNode }) => <div
+        data-testid="responsive-container">{children}</div>,
+    BarChart: ({children}: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
+    Bar: ({children}: { children: React.ReactNode }) => <div data-testid="bar">{children}</div>,
     Cell: () => <div/>,
     CartesianGrid: () => <div/>,
     XAxis: () => <div data-testid="x-axis"/>,

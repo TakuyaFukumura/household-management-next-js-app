@@ -1,17 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    Legend,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import {Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
 import {Transaction} from './CsvUploader';
 
 interface Props {
@@ -105,8 +95,19 @@ export default function IncomeExpenseBarChart({transactions}: Props) {
                         content={() => (
                             <div style={{display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '8px'}}>
                                 {LEGEND_PAYLOAD.map((entry) => (
-                                    <span key={entry.value} style={{display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#6B7280'}}>
-                                        <span style={{backgroundColor: entry.color, display: 'inline-block', width: '12px', height: '12px'}}/>
+                                    <span key={entry.value} style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        fontSize: '14px',
+                                        color: '#6B7280'
+                                    }}>
+                                        <span style={{
+                                            backgroundColor: entry.color,
+                                            display: 'inline-block',
+                                            width: '12px',
+                                            height: '12px'
+                                        }}/>
                                         {entry.value}
                                     </span>
                                 ))}

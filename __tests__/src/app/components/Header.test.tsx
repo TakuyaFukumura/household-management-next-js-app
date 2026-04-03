@@ -8,7 +8,12 @@ import Header from '@/app/components/Header';
 
 // next/linkのモック
 jest.mock('next/link', () => {
-    const MockLink = ({href, children, className, onClick}: {href: string; children: React.ReactNode; className?: string; onClick?: () => void}) => (
+    const MockLink = ({href, children, className, onClick}: {
+        href: string;
+        children: React.ReactNode;
+        className?: string;
+        onClick?: () => void
+    }) => (
         <a href={href} className={className} onClick={onClick}>{children}</a>
     );
     MockLink.displayName = 'MockLink';

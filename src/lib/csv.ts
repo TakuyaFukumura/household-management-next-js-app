@@ -2,11 +2,11 @@
  * CSV読み込み・バリデーション共通ユーティリティ
  */
 
-import {ExpenseCategory, EXPENSE_CATEGORIES, IncomeCategory, INCOME_CATEGORIES} from './constants';
+import {EXPENSE_CATEGORIES, ExpenseCategory, INCOME_CATEGORIES, IncomeCategory} from './constants';
 
 export type Transaction =
-    | {date: string; category: IncomeCategory; type: '収入'; amount: number; memo: string}
-    | {date: string; category: ExpenseCategory; type: '支出'; amount: number; memo: string};
+    | { date: string; category: IncomeCategory; type: '収入'; amount: number; memo: string }
+    | { date: string; category: ExpenseCategory; type: '支出'; amount: number; memo: string };
 
 export interface ValidationError {
     row: number;
@@ -21,7 +21,10 @@ function isExpenseCategory(category: string): category is ExpenseCategory {
     return (EXPENSE_CATEGORIES as readonly string[]).includes(category);
 }
 
-export function validateRow(row: string[], rowIndex: number): {transaction: Transaction | null; error: ValidationError | null} {
+export function validateRow(row: string[], rowIndex: number): {
+    transaction: Transaction | null;
+    error: ValidationError | null
+} {
     const [date, category, type, amountStr, memo] = row;
 
     if (!date || !category || !type || !amountStr) {

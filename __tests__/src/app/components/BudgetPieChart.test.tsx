@@ -8,9 +8,10 @@ import BudgetPieChart from '@/app/components/BudgetPieChart';
 import type {BudgetEntry} from '@/lib/budget';
 
 jest.mock('recharts', () => ({
-    ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div data-testid="responsive-container">{children}</div>,
-    PieChart: ({children}: {children: React.ReactNode}) => <div data-testid="pie-chart">{children}</div>,
-    Pie: ({children}: {children: React.ReactNode}) => <div data-testid="pie">{children}</div>,
+    ResponsiveContainer: ({children}: { children: React.ReactNode }) => <div
+        data-testid="responsive-container">{children}</div>,
+    PieChart: ({children}: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
+    Pie: ({children}: { children: React.ReactNode }) => <div data-testid="pie">{children}</div>,
     Cell: () => <div/>,
     Label: () => <div/>,
     Tooltip: () => <div data-testid="tooltip"/>,

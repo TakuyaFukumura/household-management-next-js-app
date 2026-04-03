@@ -2,12 +2,12 @@
  * 予算データの型定義・バリデーション関数
  */
 
-import {EXPENSE_CATEGORIES, INCOME_CATEGORIES} from './constants';
 import type {ExpenseCategory, IncomeCategory} from './constants';
+import {EXPENSE_CATEGORIES, INCOME_CATEGORIES} from './constants';
 
 export type BudgetEntry =
-    | {category: IncomeCategory; type: '収入'; amount: number}
-    | {category: ExpenseCategory; type: '支出'; amount: number};
+    | { category: IncomeCategory; type: '収入'; amount: number }
+    | { category: ExpenseCategory; type: '支出'; amount: number };
 
 export interface BudgetValidationError {
     row: number;
@@ -25,7 +25,7 @@ function isExpenseCategory(category: string): category is ExpenseCategory {
 export function validateBudgetRow(
     row: string[],
     rowIndex: number,
-): {entry: BudgetEntry | null; error: BudgetValidationError | null} {
+): { entry: BudgetEntry | null; error: BudgetValidationError | null } {
     if (row.length !== 3) {
         return {entry: null, error: {row: rowIndex, message: `カラム数が不正です: ${row.length}列（3列固定）`}};
     }

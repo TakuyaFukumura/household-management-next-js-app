@@ -1,16 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import {Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {

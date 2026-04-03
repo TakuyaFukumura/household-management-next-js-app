@@ -9,7 +9,10 @@ import Home from '@/app/page';
 
 // papaparseのモック
 jest.mock('papaparse', () => ({
-    parse: jest.fn((text: string, options: {skipEmptyLines?: boolean; complete: (results: {data: string[][]; errors: {row?: number; message: string}[]}) => void}) => {
+    parse: jest.fn((text: string, options: {
+        skipEmptyLines?: boolean;
+        complete: (results: { data: string[][]; errors: { row?: number; message: string }[] }) => void
+    }) => {
         const rows = text.split('\n').filter(Boolean).map((row) => row.split(','));
         options.complete({data: rows, errors: []});
     }),
@@ -17,7 +20,7 @@ jest.mock('papaparse', () => ({
 
 // next/linkのモック
 jest.mock('next/link', () => {
-    const MockLink = ({href, children, className}: {href: string; children: React.ReactNode; className?: string}) => (
+    const MockLink = ({href, children, className}: { href: string; children: React.ReactNode; className?: string }) => (
         <a href={href} className={className}>{children}</a>
     );
     MockLink.displayName = 'MockLink';
@@ -26,13 +29,13 @@ jest.mock('next/link', () => {
 
 // recharts のモック
 jest.mock('recharts', () => ({
-    PieChart: ({children}: {children: React.ReactNode}) => <div data-testid="pie-chart">{children}</div>,
+    PieChart: ({children}: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
     Pie: () => <div/>,
     Cell: () => <div/>,
     Tooltip: () => <div/>,
     Legend: () => <div/>,
-    ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div>{children}</div>,
-    BarChart: ({children}: {children: React.ReactNode}) => <div data-testid="bar-chart">{children}</div>,
+    ResponsiveContainer: ({children}: { children: React.ReactNode }) => <div>{children}</div>,
+    BarChart: ({children}: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
     Bar: () => <div/>,
     CartesianGrid: () => <div/>,
     XAxis: () => <div/>,
@@ -58,7 +61,8 @@ describe('Home（メインページ）', () => {
     });
 
     it('初期表示でローディングメッセージが表示される', () => {
-        (global.fetch as jest.Mock).mockReturnValue(new Promise(() => {}));
+        (global.fetch as jest.Mock).mockReturnValue(new Promise(() => {
+        }));
         render(<Home/>);
         expect(screen.getByText('データを読み込み中...')).toBeInTheDocument();
     });
@@ -105,7 +109,8 @@ describe('Home（メインページ）', () => {
     });
 
     it('/uploadへのナビゲーションリンクが表示される', () => {
-        (global.fetch as jest.Mock).mockReturnValue(new Promise(() => {}));
+        (global.fetch as jest.Mock).mockReturnValue(new Promise(() => {
+        }));
         render(<Home/>);
         expect(screen.getByRole('link', {name: /CSVをアップロード/})).toBeInTheDocument();
     });

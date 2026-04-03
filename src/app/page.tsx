@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import Papa from 'papaparse';
-import {Transaction, ValidationError, validateRow} from '@/lib/csv';
+import {Transaction, validateRow, ValidationError} from '@/lib/csv';
 import SummaryCards from './components/SummaryCards';
 import TransactionTable from './components/TransactionTable';
 import CategoryTable from './components/CategoryTable';
