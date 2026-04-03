@@ -8,7 +8,9 @@ import UploadPage from '@/app/upload/page';
 
 // papaparseのモック
 jest.mock('papaparse', () => ({
-    parse: jest.fn((file: File, options: {complete: (results: {data: string[][], errors: {row?: number; message: string}[]}) => void}) => {
+    parse: jest.fn((file: File, options: {
+        complete: (results: { data: string[][], errors: { row?: number; message: string }[] }) => void
+    }) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             const text = e.target?.result as string;
@@ -21,7 +23,7 @@ jest.mock('papaparse', () => ({
 
 // next/linkのモック
 jest.mock('next/link', () => {
-    const MockLink = ({href, children, className}: {href: string; children: React.ReactNode; className?: string}) => (
+    const MockLink = ({href, children, className}: { href: string; children: React.ReactNode; className?: string }) => (
         <a href={href} className={className}>{children}</a>
     );
     MockLink.displayName = 'MockLink';
@@ -30,20 +32,22 @@ jest.mock('next/link', () => {
 
 // Headerコンポーネントのモック
 jest.mock('@/app/components/Header', () => {
-    const Link = jest.requireMock('next/link') as React.ComponentType<{href: string; children: React.ReactNode}>;
-    const MockHeader = () => <header data-testid="mock-header"><nav><Link href="/">ホーム</Link></nav></header>;
+    const Link = jest.requireMock('next/link') as React.ComponentType<{ href: string; children: React.ReactNode }>;
+    const MockHeader = () => <header data-testid="mock-header">
+        <nav><Link href="/">ホーム</Link></nav>
+    </header>;
     MockHeader.displayName = 'MockHeader';
     return MockHeader;
 });
 
 // recharts のモック
 jest.mock('recharts', () => ({
-    PieChart: ({children}: {children: React.ReactNode}) => <div data-testid="pie-chart">{children}</div>,
+    PieChart: ({children}: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
     Pie: () => <div/>,
     Cell: () => <div/>,
     Tooltip: () => <div/>,
     Legend: () => <div/>,
-    ResponsiveContainer: ({children}: {children: React.ReactNode}) => <div>{children}</div>,
+    ResponsiveContainer: ({children}: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 function makeFile(content: string): File {

@@ -12,30 +12,28 @@
 ### 変更
 
 - `src/app/components/Header.tsx`: 共通ヘッダーの改善
-  - `'use client'` ディレクティブを追加し、`usePathname()` および `useState` フックを使用
-  - ナビゲーションリンクをピル型（角丸）ボタン風スタイル（アイコン付き）に変更
-  - `usePathname()` を使用して現在のページに対応するリンクをアクティブ状態として強調表示
-  - 画面幅 `md`（768px）未満でハンバーガーメニューボタンを表示し、タップでドロワーが開閉するモバイル対応を追加
-  - ハンバーガーボタンはヘッダー左端に配置
-  - ドロワー内のリンクをクリックした際にドロワーを閉じる処理を追加
+    - `'use client'` ディレクティブを追加し、`usePathname()` および `useState` フックを使用
+    - ナビゲーションリンクをピル型（角丸）ボタン風スタイル（アイコン付き）に変更
+    - `usePathname()` を使用して現在のページに対応するリンクをアクティブ状態として強調表示
+    - 画面幅 `md`（768px）未満でハンバーガーメニューボタンを表示し、タップでドロワーが開閉するモバイル対応を追加
+    - ハンバーガーボタンはヘッダー左端に配置
+    - ドロワー内のリンクをクリックした際にドロワーを閉じる処理を追加
 - `src/app/upload/page.tsx`: CSV アップロード画面のヘッダーを統一
-  - ページ内の独自ヘッダー実装を削除し、共通の `Header` コンポーネントに置き換え
-  - ページ本体（`<main>` 内）に画面タイトル（「CSVアップロード」）と説明文を追加
+    - ページ内の独自ヘッダー実装を削除し、共通の `Header` コンポーネントに置き換え
+    - ページ本体（`<main>` 内）に画面タイトル（「CSVアップロード」）と説明文を追加
 - `package.json`: バージョンを `0.10.0` から `0.11.0` に更新
 
 ### 削除
 
 - `docs/header-improvement-spec.md`: 実装完了のため削除
 
-
-
 ### 変更
 
 - `src/app/components/ExpensePieChart.tsx`: 支出割合グラフの改善
-  - 凡例を `ResponsiveContainer` 外の独立した `<ul>` リストとして描画するよう変更し、カテゴリ数が多い場合のグラフ見切れを解消
-  - グラフ本体の高さを `350px` から `260px` に調整
-  - `aggregateSmallSlices` 関数の早期 return を排除し、すべての分岐で金額降順ソートを適用するようリファクタリング
-  - 配色を彩度の高い原色系 8 色から落ち着いたトーンの 15 色パレット（Tableau カラーパレット準拠）へ変更
+    - 凡例を `ResponsiveContainer` 外の独立した `<ul>` リストとして描画するよう変更し、カテゴリ数が多い場合のグラフ見切れを解消
+    - グラフ本体の高さを `350px` から `260px` に調整
+    - `aggregateSmallSlices` 関数の早期 return を排除し、すべての分岐で金額降順ソートを適用するようリファクタリング
+    - 配色を彩度の高い原色系 8 色から落ち着いたトーンの 15 色パレット（Tableau カラーパレット準拠）へ変更
 - `package.json`: バージョンを `0.9.0` から `0.10.0` に更新
 
 ### 削除
@@ -47,10 +45,12 @@
 ### 追加
 
 - `public/data/budget.csv`: 予算設定 CSV ファイルを新規作成（収入・支出カテゴリの月次予算金額を定義）
-- `src/lib/budget.ts`: 予算データの型定義（`BudgetEntry`・`BudgetValidationError`）およびバリデーション関数（`validateBudgetRow`）を新規作成
+- `src/lib/budget.ts`: 予算データの型定義（`BudgetEntry`・`BudgetValidationError`）およびバリデーション関数（
+  `validateBudgetRow`）を新規作成
 - `src/app/budget/page.tsx`: 予算画面（`/budget`）を新規作成。予算 CSV・実績 CSV の読み込みと各コンポーネントへのデータ提供
 - `src/app/components/BudgetSummaryCards.tsx`: 収入予算合計・支出予算合計のサマリーカードコンポーネントを新規作成
-- `src/app/components/BudgetPieChart.tsx`: 支出カテゴリ別予算配分のドーナツ型円グラフコンポーネントを新規作成（3% 未満スライスの「その他」集約・カスタム凡例付き）
+- `src/app/components/BudgetPieChart.tsx`: 支出カテゴリ別予算配分のドーナツ型円グラフコンポーネントを新規作成（3%
+  未満スライスの「その他」集約・カスタム凡例付き）
 - `src/app/components/BudgetBarChart.tsx`: 収入予算・収入実績・支出予算・支出実績を4行で比較する横棒グラフコンポーネントを新規作成
 - `src/app/components/BudgetTable.tsx`: カテゴリ別に予算金額・実績金額・差額を一覧表示するテーブルコンポーネントを新規作成（差額の超過/達成を色で表示）
 
@@ -68,12 +68,12 @@
 ### 変更
 
 - `src/app/components/ExpensePieChart.tsx`: 支出割合円グラフの視認性改善
-  - スライスを支出割合の降順にソートして表示
-  - ドーナツグラフへ変更し、中央に合計金額を表示
-  - カスタム凡例（カテゴリ名・金額・割合）を追加し、スライス上のラベルを廃止
-  - 割合 3% 未満のカテゴリを「その他」に集約してラベル重なりを防止
-  - ホバー時にスライスをハイライト表示
-  - データ変化時のアニメーションを有効化
+    - スライスを支出割合の降順にソートして表示
+    - ドーナツグラフへ変更し、中央に合計金額を表示
+    - カスタム凡例（カテゴリ名・金額・割合）を追加し、スライス上のラベルを廃止
+    - 割合 3% 未満のカテゴリを「その他」に集約してラベル重なりを防止
+    - ホバー時にスライスをハイライト表示
+    - データ変化時のアニメーションを有効化
 - `package.json`: バージョンを `0.7.0` から `0.8.0` に更新
 
 ### 削除
@@ -88,7 +88,8 @@
 
 ### 変更
 
-- `src/app/page.tsx`: `IncomeExpenseBarChart` コンポーネントのインポートと配置追加（`CategoryTable | ExpensePieChart` と `TransactionTable` の間）
+- `src/app/page.tsx`: `IncomeExpenseBarChart` コンポーネントのインポートと配置追加（`CategoryTable | ExpensePieChart` と
+  `TransactionTable` の間）
 - `package.json`: バージョンを `0.6.0` から `0.7.0` に更新
 
 ### 削除
@@ -103,7 +104,8 @@
 
 ### 変更
 
-- `src/app/page.tsx`: 月別表示機能を追加。選択月の状態管理（`selectedMonth`）、月フィルタリング処理、`MonthNavigator` コンポーネントの組み込み、データが存在しない月の「データがありません」表示
+- `src/app/page.tsx`: 月別表示機能を追加。選択月の状態管理（`selectedMonth`）、月フィルタリング処理、`MonthNavigator`
+  コンポーネントの組み込み、データが存在しない月の「データがありません」表示
 
 ### 削除
 
@@ -113,7 +115,8 @@
 
 ### 追加
 
-- `src/lib/constants.ts`: 収入・支出カテゴリ定数（`INCOME_CATEGORIES`、`EXPENSE_CATEGORIES`）および型（`IncomeCategory`、`ExpenseCategory`）を定義するファイルを新規作成
+- `src/lib/constants.ts`: 収入・支出カテゴリ定数（`INCOME_CATEGORIES`、`EXPENSE_CATEGORIES`）および型（`IncomeCategory`、
+  `ExpenseCategory`）を定義するファイルを新規作成
 
 ### 変更
 
@@ -129,12 +132,14 @@
 
 ### 追加
 
-- `src/app/components/DarkModeToggle.tsx`: ダークモード切替ボタンコンポーネントを新規作成。`localStorage`にテーマを保存し、`<html>` 要素への `dark` クラス付与を管理
+- `src/app/components/DarkModeToggle.tsx`: ダークモード切替ボタンコンポーネントを新規作成。`localStorage`にテーマを保存し、
+  `<html>` 要素への `dark` クラス付与を管理
 - `src/app/components/Header.tsx`: ヘッダーコンポーネントを新規作成。アプリタイトル・CSVアップロードリンク・ダークモード切替ボタンを含む
 
 ### 変更
 
-- `src/app/page.tsx`: インラインヘッダーを `Header` コンポーネントへ置き換え。ページ背景にダークモード対応カラー（`dark:bg-gray-950`）を追加
+- `src/app/page.tsx`: インラインヘッダーを `Header` コンポーネントへ置き換え。ページ背景にダークモード対応カラー（
+  `dark:bg-gray-950`）を追加
 
 ### 削除
 
@@ -150,7 +155,8 @@
 
 ### 変更
 
-- `src/app/page.tsx`: ページ表示時に`fetch`で`/data/household.csv`を自動読み込みするよう変更。CSVアップローダーUIを削除し、`/upload`ページへのナビゲーションリンクを追加
+- `src/app/page.tsx`: ページ表示時に`fetch`で`/data/household.csv`を自動読み込みするよう変更。CSVアップローダーUIを削除し、
+  `/upload`ページへのナビゲーションリンクを追加
 - `src/app/components/CsvUploader.tsx`: `Transaction`・`ValidationError`・`validateRow`を`src/lib/csv.ts`から参照するよう変更
 
 ### 削除

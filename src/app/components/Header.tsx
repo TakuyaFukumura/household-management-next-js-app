@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {usePathname} from 'next/navigation';
 import DarkModeToggle from './DarkModeToggle';
 
 const NAV_LINKS = [
-    { href: '/', label: '🏠 ホーム' },
-    { href: '/budget', label: '💰 予算' },
-    { href: '/upload', label: '📂 CSVをアップロード' },
+    {href: '/', label: '🏠 ホーム'},
+    {href: '/budget', label: '💰 予算'},
+    {href: '/upload', label: '📂 CSVをアップロード'},
 ];
 
 export default function Header() {
@@ -34,7 +34,7 @@ export default function Header() {
 
                 {/* PC 向けナビゲーション（md 以上でのみ表示） */}
                 <nav className="hidden md:flex items-center gap-1">
-                    {NAV_LINKS.map(({ href, label }) => (
+                    {NAV_LINKS.map(({href, label}) => (
                         <Link
                             key={href}
                             href={href}
@@ -47,19 +47,20 @@ export default function Header() {
                             {label}
                         </Link>
                     ))}
-                    <DarkModeToggle />
+                    <DarkModeToggle/>
                 </nav>
 
                 {/* スマホ向け：ダークモードトグルは常に右端に表示 */}
                 <div className="md:hidden">
-                    <DarkModeToggle />
+                    <DarkModeToggle/>
                 </div>
             </div>
 
             {/* スマホ向けドロワーメニュー */}
             {menuOpen && (
-                <nav id="mobile-menu" className="md:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-2 flex flex-col gap-1">
-                    {NAV_LINKS.map(({ href, label }) => (
+                <nav id="mobile-menu"
+                     className="md:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-2 flex flex-col gap-1">
+                    {NAV_LINKS.map(({href, label}) => (
                         <Link
                             key={href}
                             href={href}

@@ -2,7 +2,7 @@
 
 import React, {useCallback, useRef, useState} from 'react';
 import Papa from 'papaparse';
-import {Transaction, ValidationError, validateRow} from '@/lib/csv';
+import {Transaction, validateRow, ValidationError} from '@/lib/csv';
 
 export type {Transaction, ValidationError};
 
