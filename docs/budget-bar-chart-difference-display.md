@@ -46,7 +46,7 @@
 | ---------- | ------------------------------------------------------- |
 | 表示ラベル | 「差額」                                                |
 | 計算式     | `差額 = 収入予算合計 − 支出予算合計`                   |
-| 数値フォーマット | 円記号付き（例: `¥50,000`、`-¥10,000`）。`toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })` を利用することで一貫性のあるフォーマットが実現できる |
+| 数値フォーマット | 既存グラフと同じく半角の円記号付き（例: `¥50,000`、`-¥10,000`）。`value < 0 ? \`-¥\${Math.abs(value).toLocaleString('ja-JP')}\` : \`¥\${value.toLocaleString('ja-JP')}\`` のように、`toLocaleString('ja-JP')` に円記号を明示的に付与する |
 | 黒字時の色 | 緑系（例: `text-green-600 dark:text-green-400`）        |
 | 赤字時の色 | 赤系（例: `text-red-600 dark:text-red-400`）            |
 | ゼロ時の色 | グレー系（例: `text-gray-600 dark:text-gray-400`）      |
@@ -80,10 +80,30 @@
 
 #### 1. 差額の計算
 
-`buildChartData` 関数内ですでに収入合計・支出合計を算出しているため、同じロジックを活用する。
+`budgetIncome` / `budgetExpense` は `buildChartData` 関数内のローカル変数のため、コンポーネント側から直接参照するのではなく、`buildChartData` の戻り値に収入合計・支出合計・差額を含めて利用する。
 
 ```typescript
-const difference = budgetIncome - budgetExpense;
+function buildChartData(budgetEntries: BudgetEntry[]) {
+    const budgetIncome = budgetEntries
+        .filter((e) => e.type === '収入')
+        .reduce((sum, e) => sum + e.amount, 0);
+
+    const budgetExpense = budgetEntries
+        .filter((e) => e.type === '支出')
+        .reduce((sum, e) => sum + e.amount, 0);
+
+    const difference = budgetIncome - budgetExpense;
+
+    return {
+        chartData: [
+            {name: '収入', value: budgetIncome, color: INCOME_COLOR},
+            {name: '支出', value: budgetExpense, color: EXPENSE_COLOR},
+        ],
+        difference,
+    };
+}
+
+const {chartData, difference} = buildChartData(budgetEntries);
 ```
 
 #### 2. 差額の色付け
@@ -102,13 +122,15 @@ function getDifferenceColor(difference: number): string {
 
 グラフコンポーネントの `ResponsiveContainer` の下に差額表示エリアを追加する。
 
-負の値を含め一貫したフォーマットにするために `toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })` を利用する（例: 黒字 `¥50,000`、赤字 `-¥10,000`）。
+既存グラフと表記を合わせ、`toLocaleString('ja-JP')` に半角の円記号を明示的に付与する（例: 黒字 `¥50,000`、赤字 `-¥10,000`）。
 
 ```tsx
 <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
     差額:
     <span className={`ml-2 font-bold ${getDifferenceColor(difference)}`}>
-        {difference.toLocaleString('ja-JP', {style: 'currency', currency: 'JPY'})}
+        {difference < 0
+            ? `-¥${Math.abs(difference).toLocaleString('ja-JP')}`
+            : `¥${difference.toLocaleString('ja-JP')}`}
     </span>
 </div>
 ```
