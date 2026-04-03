@@ -56,6 +56,18 @@ describe('validateRow', () => {
             expect(result.error?.message).toContain('日付の形式が不正です');
         });
 
+        it('存在しない日付の場合はエラーを返す', () => {
+            const result = validateRow(['2024-02-31', '食料費', '支出', '5000', ''], 2);
+            expect(result.transaction).toBeNull();
+            expect(result.error?.message).toContain('日付が存在しません');
+        });
+
+        it('存在しない月の場合はエラーを返す', () => {
+            const result = validateRow(['2024-13-01', '食料費', '支出', '5000', ''], 2);
+            expect(result.transaction).toBeNull();
+            expect(result.error?.message).toContain('日付が存在しません');
+        });
+
         it('種別が収入・支出以外の場合はエラーを返す', () => {
             const result = validateRow(['2024-01-05', '食料費', '不明', '5000', ''], 2);
             expect(result.transaction).toBeNull();

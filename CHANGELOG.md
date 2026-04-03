@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-04-03
+
+### 修正
+
+- `src/lib/budget.ts`: 予算金額のバリデーション条件を `amount < 1` から `amount < 0` に変更し、0円予算を許可
+
+### 変更
+
+- `src/lib/csv.ts`: 日付の存在チェックを追加（書式チェック通過後に `Date.UTC` を使って実在日付かどうかを検証）
+- `src/app/components/CsvUploader.tsx`: クリック選択時にもファイル形式チェックを追加（ドラッグ＆ドロップと同等の検証を `processFile` 内で実施）
+- `package.json`: バージョンを `0.11.0` から `0.12.0` に更新
+
+### 削除
+
+- `docs/budget-validation-review.md`: 実装完了のため削除
+
 ## [0.11.0] - 2026-04-03
 
 ### 変更
