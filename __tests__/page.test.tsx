@@ -160,7 +160,8 @@ describe('Home（メインページ）', () => {
             await flushPromises();
         });
 
-        expect(screen.getByText('2024年01月')).toBeInTheDocument();
+        expect(screen.getByRole('combobox', {name: '年'})).toHaveValue('2024');
+        expect(screen.getByRole('combobox', {name: '月'})).toHaveValue('01');
     });
 
     it('データが存在しない月を選択した場合「データがありません」が表示される', async () => {

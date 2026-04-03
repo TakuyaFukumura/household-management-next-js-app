@@ -23,18 +23,6 @@ export default function Home() {
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
 
-    function handlePrevMonth() {
-        const [year, month] = selectedMonth.split('-').map(Number);
-        const d = new Date(year, month - 2);
-        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-    }
-
-    function handleNextMonth() {
-        const [year, month] = selectedMonth.split('-').map(Number);
-        const d = new Date(year, month);
-        setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-    }
-
     const filteredTransactions = transactions.filter(
         (t) => t.date.startsWith(selectedMonth)
     );
@@ -122,8 +110,7 @@ export default function Home() {
                     <>
                         <MonthNavigator
                             selectedMonth={selectedMonth}
-                            onPrevMonth={handlePrevMonth}
-                            onNextMonth={handleNextMonth}
+                            onMonthChange={setSelectedMonth}
                         />
 
                         {filteredTransactions.length === 0 ? (

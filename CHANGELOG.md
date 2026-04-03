@@ -7,7 +7,24 @@
 
 ## [Unreleased]
 
-## [0.12.0] - 2026-04-03
+## [0.13.0] - 2026-04-03
+
+### 変更
+
+- `src/app/components/MonthNavigator.tsx`: ホーム画面の年月選択欄を改善
+    - 前月・翌月ボタンのラベルを記号（`◀` / `▶`）のみに変更し、`aria-label="前月"` / `aria-label="翌月"` を付与
+    - 年月の表示をテキストからドロップダウン候補付き入力欄（`<input type="text">` + `<datalist>`）に変更
+    - 年入力欄：`selectedMonth` の年を基準に前後 10 年の候補を表示。直接入力にも対応し、1000〜9999 の範囲外または不正値の場合は入力前の値に戻す
+    - 月入力欄：1〜12 の候補を表示。直接入力にも対応し、確定時は `MM` 形式（ゼロ埋め）に正規化する
+    - props を `onPrevMonth`・`onNextMonth` から `onMonthChange(selectedMonth: string)` に統合
+- `src/app/page.tsx`: `MonthNavigator` の新しい props（`onMonthChange`）に対応
+- `package.json`: バージョンを `0.12.0` から `0.13.0` に更新
+
+### 削除
+
+- `docs/home-month-navigator-improvement.md`: 実装完了のため削除
+
+
 
 ### 修正
 
