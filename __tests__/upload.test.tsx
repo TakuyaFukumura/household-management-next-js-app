@@ -30,7 +30,8 @@ jest.mock('next/link', () => {
 
 // Headerコンポーネントのモック
 jest.mock('@/app/components/Header', () => {
-    const MockHeader = () => <header data-testid="mock-header"><nav><a href="/">ホーム</a></nav></header>;
+    const Link = jest.requireMock('next/link') as React.ComponentType<{href: string; children: React.ReactNode}>;
+    const MockHeader = () => <header data-testid="mock-header"><nav><Link href="/">ホーム</Link></nav></header>;
     MockHeader.displayName = 'MockHeader';
     return MockHeader;
 });
