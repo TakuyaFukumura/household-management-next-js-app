@@ -19,9 +19,6 @@ jest.mock('recharts', () => ({
     ),
     Cell: () => <div/>,
     Label: () => <div data-testid="label"/>,
-    Legend: ({content}: {content?: (props: unknown) => React.ReactNode}) => (
-        <div data-testid="legend">{content ? content({payload: []}) : null}</div>
-    ),
     Tooltip: () => <div data-testid="tooltip"/>,
     Sector: () => <div data-testid="sector"/>,
 }));
@@ -57,7 +54,7 @@ describe('ExpensePieChart', () => {
 
         it('凡例が表示される', () => {
             render(<ExpensePieChart transactions={transactions}/>);
-            expect(screen.getByTestId('legend')).toBeInTheDocument();
+            expect(screen.getByRole('list')).toBeInTheDocument();
         });
     });
 
