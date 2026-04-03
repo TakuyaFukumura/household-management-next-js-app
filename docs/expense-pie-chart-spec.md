@@ -80,7 +80,18 @@
 - 3.1 で凡例を `ResponsiveContainer` の外に独立させることにより、recharts の `Legend` コンポーネントへの依存をなくす。
 - 凡例描画に使用する `data` 配列は `aggregateSmallSlices` の結果をそのまま金額降順で並んでいる状態にする。
   - `buildChartData` は既に金額降順でソート済み
-  - `aggregateSmallSlices` でも、`その他` をまとめた後に最終的な配列を再度金額降順でソートする
+  - `aggregateSmallSlices` でも、全ての分岐を通過した後に最終的な配列を金額降順でソートして返す
+
+現状の `aggregateSmallSlices` には次の3つの早期 return がある。
+
+| 分岐 | 条件 | 現状の戻り値 |
+|------|------|-------------|
+| 分岐A | `small.length === 0` | `main`（ソートなし）|
+| 分岐B | `existingOther` が存在する | `main`（値を加算後、ソートなし）|
+| 分岐C | それ以外 | `[...main, {その他}]`（ソートなし）|
+
+末尾の `return` に `.sort()` を追加するだけでは分岐A・分岐Bには適用されないため、  
+早期 return を排除して `result` 変数に結果を集約し、関数末尾で一括ソートして返す構造へリファクタリングする。
 
 #### 変更対象ファイル
 
@@ -89,15 +100,37 @@
 #### 変更内容イメージ
 
 ```ts
-// aggregateSmallSlices の末尾でソートを行う
-return [
-  ...main,
-  {
-    name: 'その他',
-    value: otherValue,
-    percentage: total > 0 ? (otherValue / total) * 100 : 0,
-  },
-].sort((a, b) => b.value - a.value); // 再ソート追加
+function aggregateSmallSlices(entries: ChartEntry[], total: number): ChartEntry[] {
+    const main = entries.filter((e) => e.percentage >= MIN_PERCENTAGE);
+    const small = entries.filter((e) => e.percentage < MIN_PERCENTAGE);
+
+    let result: ChartEntry[];
+
+    if (small.length === 0) {
+        result = main; // 分岐A：小スライスなし
+    } else {
+        const otherValue = small.reduce((sum, e) => sum + e.value, 0);
+        const existingOther = main.find((e) => e.name === 'その他');
+
+        if (existingOther) {
+            existingOther.value += otherValue;
+            existingOther.percentage = total > 0 ? (existingOther.value / total) * 100 : 0;
+            result = main; // 分岐B：既存の「その他」に加算
+        } else {
+            result = [
+                ...main,
+                {
+                    name: 'その他',
+                    value: otherValue,
+                    percentage: total > 0 ? (otherValue / total) * 100 : 0,
+                },
+            ]; // 分岐C：新規「その他」を追加
+        }
+    }
+
+    // 全分岐を通過した後、一括で金額降順ソート
+    return result.sort((a, b) => b.value - a.value);
+}
 ```
 
 ---
