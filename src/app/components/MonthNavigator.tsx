@@ -25,7 +25,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
     }, [yearStr, monthStr]);
 
     useEffect(() => {
-        function handlePointerDown(event: MouseEvent) {
+        function handleMouseDown(event: MouseEvent) {
             const target = event.target as Node;
 
             if (!yearFieldRef.current?.contains(target)) {
@@ -37,10 +37,10 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
             }
         }
 
-        document.addEventListener('mousedown', handlePointerDown);
+        document.addEventListener('mousedown', handleMouseDown);
 
         return () => {
-            document.removeEventListener('mousedown', handlePointerDown);
+            document.removeEventListener('mousedown', handleMouseDown);
         };
     }, []);
 
