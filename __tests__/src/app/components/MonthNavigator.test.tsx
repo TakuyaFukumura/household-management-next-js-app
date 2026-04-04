@@ -101,6 +101,33 @@ describe('MonthNavigator', () => {
         expect(onMonthChange).toHaveBeenCalledWith('2030-04');
     });
 
+    it('年入力欄にフォーカスすると前後10年分の候補が表示される', () => {
+        render(
+            <MonthNavigator
+                selectedMonth="2025-04"
+                onMonthChange={onMonthChange}
+            />
+        );
+        const yearInput = screen.getByRole('combobox', {name: '年'});
+        fireEvent.focus(yearInput);
+        expect(screen.getByRole('listbox', {name: '年候補'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '2015年'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '2035年'})).toBeInTheDocument();
+    });
+
+    it('年候補をクリックすると onMonthChange が呼ばれる', () => {
+        render(
+            <MonthNavigator
+                selectedMonth="2025-04"
+                onMonthChange={onMonthChange}
+            />
+        );
+        const yearInput = screen.getByRole('combobox', {name: '年'});
+        fireEvent.focus(yearInput);
+        fireEvent.mouseDown(screen.getByRole('option', {name: '2027年'}));
+        expect(onMonthChange).toHaveBeenCalledWith('2027-04');
+    });
+
     it('年入力欄でフォーカスアウトすると新しい年で onMonthChange が呼ばれる', () => {
         render(
             <MonthNavigator
@@ -125,6 +152,33 @@ describe('MonthNavigator', () => {
         fireEvent.change(monthInput, {target: {value: '12'}});
         fireEvent.keyDown(monthInput, {key: 'Enter'});
         expect(onMonthChange).toHaveBeenCalledWith('2025-12');
+    });
+
+    it('月入力欄にフォーカスすると12か月分の候補が表示される', () => {
+        render(
+            <MonthNavigator
+                selectedMonth="2025-04"
+                onMonthChange={onMonthChange}
+            />
+        );
+        const monthInput = screen.getByRole('combobox', {name: '月'});
+        fireEvent.focus(monthInput);
+        expect(screen.getByRole('listbox', {name: '月候補'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '01月'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '12月'})).toBeInTheDocument();
+    });
+
+    it('月候補をクリックすると onMonthChange が呼ばれる', () => {
+        render(
+            <MonthNavigator
+                selectedMonth="2025-04"
+                onMonthChange={onMonthChange}
+            />
+        );
+        const monthInput = screen.getByRole('combobox', {name: '月'});
+        fireEvent.focus(monthInput);
+        fireEvent.mouseDown(screen.getByRole('option', {name: '09月'}));
+        expect(onMonthChange).toHaveBeenCalledWith('2025-09');
     });
 
     it('月入力欄に1桁の月を入力するとゼロ埋めして onMonthChange が呼ばれる', () => {
