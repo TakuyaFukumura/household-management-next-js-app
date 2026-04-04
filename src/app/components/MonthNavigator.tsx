@@ -143,6 +143,8 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 commitYear((e.target as HTMLInputElement).value);
+                            } else if (e.key === 'Escape') {
+                                setIsYearOptionsOpen(false);
                             }
                         }}
                         className={`${inputClass} w-24 md:w-28`}
@@ -200,6 +202,8 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 commitMonth((e.target as HTMLInputElement).value);
+                            } else if (e.key === 'Escape') {
+                                setIsMonthOptionsOpen(false);
                             }
                         }}
                         className={`${inputClass} w-20`}
