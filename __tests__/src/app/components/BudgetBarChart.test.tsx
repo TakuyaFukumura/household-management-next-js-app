@@ -36,6 +36,40 @@ describe('BudgetBarChart', () => {
             render(<BudgetBarChart budgetEntries={budgetEntries}/>);
             expect(screen.getByText('収支予算')).toBeInTheDocument();
         });
+
+        it('差額ラベルが表示される', () => {
+            render(<BudgetBarChart budgetEntries={budgetEntries}/>);
+            expect(screen.getByText('差額:')).toBeInTheDocument();
+        });
+
+        it('黒字の場合、差額が緑色で表示される', () => {
+            render(<BudgetBarChart budgetEntries={budgetEntries}/>);
+            // 収入400000 - 支出50000 = 350000（黒字）
+            const differenceSpan = screen.getByText('¥350,000');
+            expect(differenceSpan).toHaveClass('text-green-600');
+        });
+
+        it('赤字の場合、差額が赤色で表示される', () => {
+            const deficitEntries: BudgetEntry[] = [
+                {category: '給与', type: '収入', amount: 30000},
+                {category: '食料費', type: '支出', amount: 50000},
+            ];
+            render(<BudgetBarChart budgetEntries={deficitEntries}/>);
+            // 収入30000 - 支出50000 = -20000（赤字）
+            const differenceSpan = screen.getByText('-¥20,000');
+            expect(differenceSpan).toHaveClass('text-red-600');
+        });
+
+        it('差額がゼロの場合、グレーで表示される', () => {
+            const breakEvenEntries: BudgetEntry[] = [
+                {category: '給与', type: '収入', amount: 50000},
+                {category: '食料費', type: '支出', amount: 50000},
+            ];
+            render(<BudgetBarChart budgetEntries={breakEvenEntries}/>);
+            // 収入50000 - 支出50000 = 0
+            const differenceSpan = screen.getByText('¥0');
+            expect(differenceSpan).toHaveClass('text-gray-600');
+        });
     });
 
     describe('データなしの場合', () => {
@@ -47,6 +81,11 @@ describe('BudgetBarChart', () => {
         it('グラフが表示されない', () => {
             render(<BudgetBarChart budgetEntries={[]}/>);
             expect(screen.queryByTestId('bar-chart')).not.toBeInTheDocument();
+        });
+
+        it('差額ラベルが表示されない', () => {
+            render(<BudgetBarChart budgetEntries={[]}/>);
+            expect(screen.queryByText('差額:')).not.toBeInTheDocument();
         });
     });
 });

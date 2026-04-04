@@ -17,7 +17,12 @@ interface BarChartEntry {
 const INCOME_COLOR = '#22c55e';
 const EXPENSE_COLOR = '#ef4444';
 
-function buildChartData(budgetEntries: BudgetEntry[]): BarChartEntry[] {
+interface ChartDataResult {
+    chartData: BarChartEntry[];
+    difference: number;
+}
+
+function buildChartData(budgetEntries: BudgetEntry[]): ChartDataResult {
     const budgetIncome = budgetEntries
         .filter((e) => e.type === '収入')
         .reduce((sum, e) => sum + e.amount, 0);
@@ -26,10 +31,21 @@ function buildChartData(budgetEntries: BudgetEntry[]): BarChartEntry[] {
         .filter((e) => e.type === '支出')
         .reduce((sum, e) => sum + e.amount, 0);
 
-    return [
-        {name: '収入', value: budgetIncome, color: INCOME_COLOR},
-        {name: '支出', value: budgetExpense, color: EXPENSE_COLOR},
-    ];
+    const difference = budgetIncome - budgetExpense;
+
+    return {
+        chartData: [
+            {name: '収入', value: budgetIncome, color: INCOME_COLOR},
+            {name: '支出', value: budgetExpense, color: EXPENSE_COLOR},
+        ],
+        difference,
+    };
+}
+
+function getDifferenceColor(difference: number): string {
+    if (difference > 0) return 'text-green-600 dark:text-green-400';
+    if (difference < 0) return 'text-red-600 dark:text-red-400';
+    return 'text-gray-600 dark:text-gray-400';
 }
 
 function formatAxisValue(value: number): string {
@@ -41,8 +57,8 @@ function formatTooltipValue(value: unknown): string {
 }
 
 export default function BudgetBarChart({budgetEntries}: Props) {
-    const data = buildChartData(budgetEntries);
-    const isEmpty = data.every((d) => d.value === 0);
+    const {chartData, difference} = buildChartData(budgetEntries);
+    const isEmpty = chartData.every((d) => d.value === 0);
 
     if (isEmpty) {
         return (
@@ -57,7 +73,7 @@ export default function BudgetBarChart({budgetEntries}: Props) {
             <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">収支予算</h2>
             <ResponsiveContainer width="100%" height={200}>
                 <BarChart
-                    data={data}
+                    data={chartData}
                     layout="vertical"
                     margin={{top: 5, right: 30, left: 20, bottom: 5}}
                 >
@@ -85,12 +101,20 @@ export default function BudgetBarChart({budgetEntries}: Props) {
                         }}
                     />
                     <Bar dataKey="value" name="金額">
-                        {data.map((entry, index) => (
+                        {chartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color}/>
                         ))}
                     </Bar>
                 </BarChart>
             </ResponsiveContainer>
+            <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                差額:
+                <span className={`ml-2 font-bold ${getDifferenceColor(difference)}`}>
+                    {difference < 0
+                        ? `-¥${Math.abs(difference).toLocaleString('ja-JP')}`
+                        : `¥${difference.toLocaleString('ja-JP')}`}
+                </span>
+            </div>
         </div>
     );
 }
