@@ -7,6 +7,21 @@
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-04-04
+
+### 追加
+
+- `src/app/components/BudgetBarChart.tsx`: 収支予算欄のグラフ下部に差額表示を追加
+    - `buildChartData` の戻り値に差額（`difference`）を含めるよう変更
+    - `getDifferenceColor` 関数を追加（黒字: 緑、赤字: 赤、ゼロ: グレー）
+    - グラフ下部に「差額: ¥XX,XXX」形式で差額を表示（`toLocaleString('ja-JP')` に円記号を明示的に付与）
+    - データが空の場合は差額表示を行わない
+- `package.json`: バージョンを `0.13.0` から `0.14.0` に更新
+
+### 削除
+
+- `docs/budget-bar-chart-difference-display.md`: 実装完了のため削除
+
 ## [0.13.0] - 2026-04-03
 
 ### 変更
