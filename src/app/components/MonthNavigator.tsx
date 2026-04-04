@@ -9,7 +9,7 @@ interface MonthNavigatorProps {
 
 export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavigatorProps) {
     const [yearStr, monthStr] = selectedMonth.split('-');
-    const yearNum = parseInt(yearStr, 10);
+    const currentYear = new Date().getFullYear();
     const [yearInput, setYearInput] = useState(yearStr);
     const [monthInput, setMonthInput] = useState(monthStr);
     const [isYearOptionsOpen, setIsYearOptionsOpen] = useState(false);
@@ -45,7 +45,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
     }, []);
 
     const YEAR_RANGE = 10;
-    const yearOptions = Array.from({length: YEAR_RANGE * 2 + 1}, (_, i) => yearNum - YEAR_RANGE + i);
+    const yearOptions = Array.from({length: YEAR_RANGE + 1}, (_, i) => currentYear - i);
     const monthOptions = Array.from({length: 12}, (_, i) => i + 1);
 
     function handlePrevMonth() {
@@ -174,7 +174,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                                             selectYear(y);
                                         }}
                                     >
-                                        {y}年
+                                        {y}
                                     </button>
                                 </li>
                             ))}
@@ -233,7 +233,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                                             selectMonth(m);
                                         }}
                                     >
-                                        {String(m).padStart(2, '0')}月
+                                        {String(m).padStart(2, '0')}
                                     </button>
                                 </li>
                             ))}

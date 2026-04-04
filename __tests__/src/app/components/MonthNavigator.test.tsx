@@ -101,7 +101,7 @@ describe('MonthNavigator', () => {
         expect(onMonthChange).toHaveBeenCalledWith('2030-04');
     });
 
-    it('年入力欄にフォーカスすると前後10年分の候補が表示される', () => {
+    it('年入力欄にフォーカスすると現在年から過去10年分の候補が表示される', () => {
         render(
             <MonthNavigator
                 selectedMonth="2025-04"
@@ -111,8 +111,23 @@ describe('MonthNavigator', () => {
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
         expect(screen.getByRole('listbox', {name: '年候補'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '2015年'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '2035年'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '2026'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '2016'})).toBeInTheDocument();
+    });
+
+    it('年候補は現在年から過去年の順に表示される', () => {
+        render(
+            <MonthNavigator
+                selectedMonth="2025-04"
+                onMonthChange={onMonthChange}
+            />
+        );
+        const yearInput = screen.getByRole('combobox', {name: '年'});
+        fireEvent.focus(yearInput);
+        const yearOptions = screen.getAllByRole('option').filter((option) => /^\d{4}$/.test(option.textContent ?? ''));
+        expect(yearOptions[0]).toHaveTextContent('2026');
+        expect(yearOptions[1]).toHaveTextContent('2025');
+        expect(yearOptions[yearOptions.length - 1]).toHaveTextContent('2016');
     });
 
     it('年候補をクリックすると onMonthChange が呼ばれる', () => {
@@ -124,8 +139,8 @@ describe('MonthNavigator', () => {
         );
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
-        fireEvent.mouseDown(screen.getByRole('option', {name: '2027年'}));
-        expect(onMonthChange).toHaveBeenCalledWith('2027-04');
+        fireEvent.mouseDown(screen.getByRole('option', {name: '2025'}));
+        expect(onMonthChange).toHaveBeenCalledWith('2025-04');
     });
 
     it('年入力欄でEscapeキーを押すと候補リストが閉じる', () => {
@@ -178,8 +193,8 @@ describe('MonthNavigator', () => {
         const monthInput = screen.getByRole('combobox', {name: '月'});
         fireEvent.focus(monthInput);
         expect(screen.getByRole('listbox', {name: '月候補'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '01月'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '12月'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '01'})).toBeInTheDocument();
+        expect(screen.getByRole('option', {name: '12'})).toBeInTheDocument();
     });
 
     it('月候補をクリックすると onMonthChange が呼ばれる', () => {
@@ -191,7 +206,7 @@ describe('MonthNavigator', () => {
         );
         const monthInput = screen.getByRole('combobox', {name: '月'});
         fireEvent.focus(monthInput);
-        fireEvent.mouseDown(screen.getByRole('option', {name: '09月'}));
+        fireEvent.mouseDown(screen.getByRole('option', {name: '09'}));
         expect(onMonthChange).toHaveBeenCalledWith('2025-09');
     });
 
