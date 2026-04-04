@@ -49,11 +49,11 @@ function getDifferenceColor(difference: number): string {
 }
 
 function formatAxisValue(value: number): string {
-    return `¥${value.toLocaleString()}`;
+    return `¥${value.toLocaleString('ja-JP')}`;
 }
 
 function formatTooltipValue(value: unknown): string {
-    return typeof value === 'number' ? `¥${value.toLocaleString()}` : String(value ?? '');
+    return typeof value === 'number' ? `¥${value.toLocaleString('ja-JP')}` : String(value ?? '');
 }
 
 export default function BudgetBarChart({budgetEntries}: Props) {
@@ -112,7 +112,9 @@ export default function BudgetBarChart({budgetEntries}: Props) {
                 <span className={`ml-2 font-bold ${getDifferenceColor(difference)}`}>
                     {difference < 0
                         ? `-¥${Math.abs(difference).toLocaleString('ja-JP')}`
-                        : `¥${difference.toLocaleString('ja-JP')}`}
+                        : difference > 0
+                            ? `+¥${difference.toLocaleString('ja-JP')}`
+                            : `±¥0`}
                 </span>
             </div>
         </div>

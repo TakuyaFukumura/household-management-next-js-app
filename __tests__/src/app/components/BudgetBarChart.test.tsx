@@ -39,13 +39,13 @@ describe('BudgetBarChart', () => {
 
         it('差額ラベルが表示される', () => {
             render(<BudgetBarChart budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('差額:')).toBeInTheDocument();
+            expect(screen.getByText(/差額:/)).toBeInTheDocument();
         });
 
         it('黒字の場合、差額が緑色で表示される', () => {
             render(<BudgetBarChart budgetEntries={budgetEntries}/>);
             // 収入400000 - 支出50000 = 350000（黒字）
-            const differenceSpan = screen.getByText('¥350,000');
+            const differenceSpan = screen.getByText('+¥350,000');
             expect(differenceSpan).toHaveClass('text-green-600');
         });
 
@@ -67,7 +67,7 @@ describe('BudgetBarChart', () => {
             ];
             render(<BudgetBarChart budgetEntries={breakEvenEntries}/>);
             // 収入50000 - 支出50000 = 0
-            const differenceSpan = screen.getByText('¥0');
+            const differenceSpan = screen.getByText('±¥0');
             expect(differenceSpan).toHaveClass('text-gray-600');
         });
     });
@@ -85,7 +85,7 @@ describe('BudgetBarChart', () => {
 
         it('差額ラベルが表示されない', () => {
             render(<BudgetBarChart budgetEntries={[]}/>);
-            expect(screen.queryByText('差額:')).not.toBeInTheDocument();
+            expect(screen.queryByText(/差額:/)).not.toBeInTheDocument();
         });
     });
 });
