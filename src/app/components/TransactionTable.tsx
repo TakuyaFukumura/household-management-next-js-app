@@ -33,7 +33,7 @@ export default function TransactionTable({transactions}: Props) {
                         key={`${i}-${t.date}-${t.category}-${t.type}-${t.amount}-${t.memo}`}
                         className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
-                        <td className="px-4 py-3">{`${parseInt(t.date.slice(8, 10), 10)}日`}</td>
+                        <td className="px-4 py-3">{`${t.date.slice(8, 10)}日`}</td>
                         <td className="px-4 py-3">{t.category}</td>
                         <td className="px-4 py-3">
                                 <span className={`px-2 py-1 rounded text-xs font-medium ${typeBadgeClass(t.type)}`}>

@@ -68,11 +68,11 @@ describe('TransactionTable', () => {
     });
 
     describe('日付表示形式', () => {
-        it('日付列には日のみ「DD日」形式で表示される', () => {
+        it('日付列には日のみ「DD日」形式（ゼロ埋め）で表示される', () => {
             render(<TransactionTable transactions={transactions}/>);
             expect(screen.getByText('10日')).toBeInTheDocument();
-            expect(screen.getByText('5日')).toBeInTheDocument();
-            expect(screen.getByText('1日')).toBeInTheDocument();
+            expect(screen.getByText('05日')).toBeInTheDocument();
+            expect(screen.getByText('01日')).toBeInTheDocument();
         });
 
         it('YYYY-MM-DD 形式の日付文字列がそのまま表示されない', () => {
