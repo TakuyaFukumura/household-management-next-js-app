@@ -63,7 +63,23 @@ describe('TransactionTable', () => {
             render(<TransactionTable transactions={transactions}/>);
             const rows = screen.getAllByRole('row');
             // rows[0] = header, rows[1] = first data row
-            expect(rows[1]).toHaveTextContent('2024-01-10');
+            expect(rows[1]).toHaveTextContent('10日');
+        });
+    });
+
+    describe('日付表示形式', () => {
+        it('日付列には日のみ「DD日」形式で表示される', () => {
+            render(<TransactionTable transactions={transactions}/>);
+            expect(screen.getByText('10日')).toBeInTheDocument();
+            expect(screen.getByText('5日')).toBeInTheDocument();
+            expect(screen.getByText('1日')).toBeInTheDocument();
+        });
+
+        it('YYYY-MM-DD 形式の日付文字列がそのまま表示されない', () => {
+            render(<TransactionTable transactions={transactions}/>);
+            expect(screen.queryByText('2024-01-10')).not.toBeInTheDocument();
+            expect(screen.queryByText('2024-01-05')).not.toBeInTheDocument();
+            expect(screen.queryByText('2024-01-01')).not.toBeInTheDocument();
         });
     });
 
