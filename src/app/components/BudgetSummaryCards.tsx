@@ -2,10 +2,10 @@ import React from 'react';
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {
-    readonly budgetEntries: BudgetEntry[];
+    readonly budgetEntries: readonly BudgetEntry[];
 }
 
-export default function BudgetSummaryCards({budgetEntries}: Props) {
+export default function BudgetSummaryCards({budgetEntries}: Readonly<Props>) {
     const totalIncome = budgetEntries
         .filter((e) => e.type === '収入')
         .reduce((sum, e) => sum + e.amount, 0);

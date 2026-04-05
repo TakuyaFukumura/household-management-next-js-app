@@ -5,7 +5,7 @@ import {Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis,
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {
-    readonly budgetEntries: BudgetEntry[];
+    readonly budgetEntries: readonly BudgetEntry[];
 }
 
 interface BarChartEntry {
@@ -22,7 +22,7 @@ interface ChartDataResult {
     difference: number;
 }
 
-function buildChartData(budgetEntries: BudgetEntry[]): ChartDataResult {
+function buildChartData(budgetEntries: readonly BudgetEntry[]): ChartDataResult {
     const budgetIncome = budgetEntries
         .filter((e) => e.type === '収入')
         .reduce((sum, e) => sum + e.amount, 0);
@@ -56,7 +56,7 @@ function formatTooltipValue(value: unknown): string {
     return typeof value === 'number' ? `¥${value.toLocaleString('ja-JP')}` : String(value ?? '');
 }
 
-export default function BudgetBarChart({budgetEntries}: Props) {
+export default function BudgetBarChart({budgetEntries}: Readonly<Props>) {
     const {chartData, difference} = buildChartData(budgetEntries);
     const isEmpty = chartData.every((d) => d.value === 0);
 

@@ -3,10 +3,10 @@
 import React, {useState} from 'react';
 import type {PieSectorShapeProps} from 'recharts';
 import {Label, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'recharts';
-import type {Transaction} from '@/app/components/CsvUploader';
+import type {Transaction} from '@/lib/csv';
 
 interface Props {
-    readonly transactions: Transaction[];
+    readonly transactions: readonly Transaction[];
 }
 
 const COLORS = [
@@ -39,7 +39,7 @@ interface ChartEntryWithFill extends ChartEntry {
     fill: string;
 }
 
-function buildChartData(transactions: Transaction[]): ChartEntry[] {
+function buildChartData(transactions: readonly Transaction[]): ChartEntry[] {
     const expenses = transactions.filter((t) => t.type === '支出');
     const total = expenses.reduce((sum, t) => sum + t.amount, 0);
 

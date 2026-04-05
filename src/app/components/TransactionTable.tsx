@@ -1,8 +1,8 @@
 import React from 'react';
-import {Transaction} from './CsvUploader';
+import type {Transaction} from '@/lib/csv';
 
 interface Props {
-    transactions: Transaction[];
+    readonly transactions: readonly Transaction[];
 }
 
 const typeBadgeClass = (type: string) =>
@@ -10,7 +10,7 @@ const typeBadgeClass = (type: string) =>
         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
         : 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300';
 
-export default function TransactionTable({transactions}: Props) {
+export default function TransactionTable({transactions}: Readonly<Props>) {
     const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date));
 
     return (

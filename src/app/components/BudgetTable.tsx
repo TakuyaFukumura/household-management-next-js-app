@@ -2,7 +2,7 @@ import React from 'react';
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {
-    readonly budgetEntries: BudgetEntry[];
+    readonly budgetEntries: readonly BudgetEntry[];
 }
 
 interface TableRow {
@@ -11,7 +11,7 @@ interface TableRow {
     budget: number;
 }
 
-function buildTableRows(budgetEntries: BudgetEntry[]): TableRow[] {
+function buildTableRows(budgetEntries: readonly BudgetEntry[]): TableRow[] {
     return budgetEntries.map((e) => ({
         category: e.category,
         type: e.type,
@@ -19,7 +19,7 @@ function buildTableRows(budgetEntries: BudgetEntry[]): TableRow[] {
     }));
 }
 
-export default function BudgetTable({budgetEntries}: Props) {
+export default function BudgetTable({budgetEntries}: Readonly<Props>) {
     const rows = buildTableRows(budgetEntries);
     const incomeRows = rows.filter((r) => r.type === '収入');
     const expenseRows = rows.filter((r) => r.type === '支出');

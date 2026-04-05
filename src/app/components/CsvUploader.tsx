@@ -7,10 +7,10 @@ import {Transaction, validateRow, ValidationError} from '@/lib/csv';
 export type {Transaction, ValidationError};
 
 interface Props {
-    onDataLoaded: (transactions: Transaction[], errors: ValidationError[]) => void;
+    readonly onDataLoaded: (transactions: Transaction[], errors: ValidationError[]) => void;
 }
 
-export default function CsvUploader({onDataLoaded}: Props) {
+export default function CsvUploader({onDataLoaded}: Readonly<Props>) {
     const [isDragging, setIsDragging] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 

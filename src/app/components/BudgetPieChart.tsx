@@ -6,7 +6,7 @@ import {Label, Pie, PieChart, ResponsiveContainer, Sector, Tooltip} from 'rechar
 import type {BudgetEntry} from '@/lib/budget';
 
 interface Props {
-    readonly budgetEntries: BudgetEntry[];
+    readonly budgetEntries: readonly BudgetEntry[];
 }
 
 const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
@@ -23,7 +23,7 @@ interface ChartEntryWithFill extends ChartEntry {
     fill: string;
 }
 
-function buildChartData(budgetEntries: BudgetEntry[]): ChartEntry[] {
+function buildChartData(budgetEntries: readonly BudgetEntry[]): ChartEntry[] {
     const expenses = budgetEntries.filter((e) => e.type === '支出');
     const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
@@ -82,7 +82,7 @@ function formatTooltipValue(value: unknown): string {
     return '';
 }
 
-export default function BudgetPieChart({budgetEntries}: Props) {
+export default function BudgetPieChart({budgetEntries}: Readonly<Props>) {
     const [isDark, setIsDark] = useState(false);
 
     React.useEffect(() => {

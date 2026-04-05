@@ -1,8 +1,8 @@
 import React from 'react';
-import {Transaction} from './CsvUploader';
+import type {Transaction} from '@/lib/csv';
 
 interface Props {
-    transactions: Transaction[];
+    readonly transactions: readonly Transaction[];
 }
 
 interface CategorySummary {
@@ -11,7 +11,7 @@ interface CategorySummary {
     percentage: number;
 }
 
-function buildCategorySummaries(transactions: Transaction[]): CategorySummary[] {
+function buildCategorySummaries(transactions: readonly Transaction[]): CategorySummary[] {
     const expenses = transactions.filter((t) => t.type === '支出');
     const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0);
 
@@ -29,7 +29,7 @@ function buildCategorySummaries(transactions: Transaction[]): CategorySummary[] 
         .sort((a, b) => b.total - a.total);
 }
 
-export default function CategoryTable({transactions}: Props) {
+export default function CategoryTable({transactions}: Readonly<Props>) {
     const summaries = buildCategorySummaries(transactions);
 
     return (

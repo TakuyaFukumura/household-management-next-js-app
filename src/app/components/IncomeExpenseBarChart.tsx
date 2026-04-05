@@ -2,10 +2,10 @@
 
 import React from 'react';
 import {Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,} from 'recharts';
-import {Transaction} from './CsvUploader';
+import type {Transaction} from '@/lib/csv';
 
 interface Props {
-    transactions: Transaction[];
+    readonly transactions: readonly Transaction[];
 }
 
 interface ChartEntry {
@@ -24,7 +24,7 @@ const LEGEND_PAYLOAD = Object.entries(BAR_COLORS).map(([name, color]) => ({
     color,
 }));
 
-function buildChartData(transactions: Transaction[]): ChartEntry[] {
+function buildChartData(transactions: readonly Transaction[]): ChartEntry[] {
     const totalIncome = transactions
         .filter((t) => t.type === '収入')
         .reduce((sum, t) => sum + t.amount, 0);
@@ -47,7 +47,7 @@ function formatTooltipValue(value: unknown): string {
     return typeof value === 'number' ? `¥${value.toLocaleString()}` : String(value ?? '');
 }
 
-export default function IncomeExpenseBarChart({transactions}: Props) {
+export default function IncomeExpenseBarChart({transactions}: Readonly<Props>) {
     const data = buildChartData(transactions);
     const isEmpty = data.every((d) => d.value === 0);
 
