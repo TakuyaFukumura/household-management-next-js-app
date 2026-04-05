@@ -28,12 +28,12 @@ describe('BudgetSummaryCards', () => {
     });
 
     describe('金額計算', () => {
-        it('収入予算合計が正しく計算される', () => {
+        it('想定収入合計が正しく計算される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
             expect(screen.getByText('¥400,000')).toBeInTheDocument();
         });
 
-        it('支出予算合計が正しく計算される', () => {
+        it('想定支出合計が正しく計算される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
             expect(screen.getByText('¥130,000')).toBeInTheDocument();
         });
