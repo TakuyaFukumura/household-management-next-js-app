@@ -1,11 +1,11 @@
 import React from 'react';
-import {Transaction} from './CsvUploader';
+import type {Transaction} from '@/lib/csv';
 
 interface Props {
-    transactions: Transaction[];
+    readonly transactions: readonly Transaction[];
 }
 
-export default function SummaryCards({transactions}: Props) {
+export default function SummaryCards({transactions}: Readonly<Props>) {
     const totalIncome = transactions
         .filter((t) => t.type === '収入')
         .reduce((sum, t) => sum + t.amount, 0);

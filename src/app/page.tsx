@@ -16,6 +16,22 @@ function getCurrentMonth(): string {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
+function getLatestTransactionMonth(transactions: readonly Transaction[]): string | null {
+    if (transactions.length === 0) {
+        return null;
+    }
+
+    let latestDate = transactions[0].date;
+
+    for (const transaction of transactions.slice(1)) {
+        if (transaction.date > latestDate) {
+            latestDate = transaction.date;
+        }
+    }
+
+    return latestDate.slice(0, 7);
+}
+
 export default function Home() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [errors, setErrors] = useState<ValidationError[]>([]);
@@ -61,12 +77,9 @@ export default function Home() {
 
                         setTransactions(txs);
                         setErrors(errs);
-                        if (txs.length > 0) {
-                            const latestDate = txs.reduce(
-                                (max, t) => (t.date > max ? t.date : max),
-                                txs[0].date
-                            );
-                            setSelectedMonth(latestDate.slice(0, 7));
+                        const latestMonth = getLatestTransactionMonth(txs);
+                        if (latestMonth) {
+                            setSelectedMonth(latestMonth);
                         }
                         setHasLoaded(true);
                     },

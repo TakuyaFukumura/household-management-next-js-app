@@ -2,7 +2,7 @@
  * MonthNavigator コンポーネントのテスト
  */
 import React from 'react';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, within} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import MonthNavigator from '@/app/components/MonthNavigator';
 
@@ -110,9 +110,9 @@ describe('MonthNavigator', () => {
         );
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
-        expect(screen.getByRole('listbox', {name: '年候補'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '2026'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '2016'})).toBeInTheDocument();
+        expect(screen.getByLabelText('年候補')).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: '2026'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: '2016'})).toBeInTheDocument();
     });
 
     it('年候補は現在年から過去年の順に表示される', () => {
@@ -124,10 +124,12 @@ describe('MonthNavigator', () => {
         );
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
-        const yearOptions = screen.getAllByRole('option').filter((option) => /^\d{4}$/.test(option.textContent ?? ''));
-        expect(yearOptions[0]).toHaveTextContent('2026');
-        expect(yearOptions[1]).toHaveTextContent('2025');
-        expect(yearOptions[yearOptions.length - 1]).toHaveTextContent('2016');
+        const yearOptionTexts = within(screen.getByLabelText('年候補'))
+            .getAllByRole('button')
+            .map((button) => button.textContent);
+        expect(yearOptionTexts[0]).toBe('2026');
+        expect(yearOptionTexts[1]).toBe('2025');
+        expect(yearOptionTexts[yearOptionTexts.length - 1]).toBe('2016');
     });
 
     it('年候補をクリックすると onMonthChange が呼ばれる', () => {
@@ -139,7 +141,7 @@ describe('MonthNavigator', () => {
         );
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
-        fireEvent.mouseDown(screen.getByRole('option', {name: '2025'}));
+        fireEvent.mouseDown(screen.getByRole('button', {name: '2025'}));
         expect(onMonthChange).toHaveBeenCalledWith('2025-04');
     });
 
@@ -152,9 +154,9 @@ describe('MonthNavigator', () => {
         );
         const yearInput = screen.getByRole('combobox', {name: '年'});
         fireEvent.focus(yearInput);
-        expect(screen.getByRole('listbox', {name: '年候補'})).toBeInTheDocument();
+        expect(screen.getByLabelText('年候補')).toBeInTheDocument();
         fireEvent.keyDown(yearInput, {key: 'Escape'});
-        expect(screen.queryByRole('listbox', {name: '年候補'})).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('年候補')).not.toBeInTheDocument();
     });
 
     it('年入力欄でフォーカスアウトすると新しい年で onMonthChange が呼ばれる', () => {
@@ -192,9 +194,9 @@ describe('MonthNavigator', () => {
         );
         const monthInput = screen.getByRole('combobox', {name: '月'});
         fireEvent.focus(monthInput);
-        expect(screen.getByRole('listbox', {name: '月候補'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '01'})).toBeInTheDocument();
-        expect(screen.getByRole('option', {name: '12'})).toBeInTheDocument();
+        expect(screen.getByLabelText('月候補')).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: '01'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: '12'})).toBeInTheDocument();
     });
 
     it('月候補をクリックすると onMonthChange が呼ばれる', () => {
@@ -206,7 +208,7 @@ describe('MonthNavigator', () => {
         );
         const monthInput = screen.getByRole('combobox', {name: '月'});
         fireEvent.focus(monthInput);
-        fireEvent.mouseDown(screen.getByRole('option', {name: '09'}));
+        fireEvent.mouseDown(screen.getByRole('button', {name: '09'}));
         expect(onMonthChange).toHaveBeenCalledWith('2025-09');
     });
 
@@ -219,9 +221,9 @@ describe('MonthNavigator', () => {
         );
         const monthInput = screen.getByRole('combobox', {name: '月'});
         fireEvent.focus(monthInput);
-        expect(screen.getByRole('listbox', {name: '月候補'})).toBeInTheDocument();
+        expect(screen.getByLabelText('月候補')).toBeInTheDocument();
         fireEvent.keyDown(monthInput, {key: 'Escape'});
-        expect(screen.queryByRole('listbox', {name: '月候補'})).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('月候補')).not.toBeInTheDocument();
     });
 
     it('月入力欄に1桁の月を入力するとゼロ埋めして onMonthChange が呼ばれる', () => {

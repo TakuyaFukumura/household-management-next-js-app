@@ -3,11 +3,11 @@
 import React, {useEffect, useId, useRef, useState} from 'react';
 
 interface MonthNavigatorProps {
-    selectedMonth: string;
-    onMonthChange: (selectedMonth: string) => void;
+    readonly selectedMonth: string;
+    readonly onMonthChange: (selectedMonth: string) => void;
 }
 
-export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavigatorProps) {
+export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<MonthNavigatorProps>) {
     const [yearStr, monthStr] = selectedMonth.split('-');
     const currentYear = new Date().getFullYear();
     const [yearInput, setYearInput] = useState(yearStr);
@@ -67,7 +67,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
             setYearInput(yearStr);
             return;
         }
-        const num = parseInt(trimmed, 10);
+        const num = Number.parseInt(trimmed, 10);
         if (num < 1000 || num > 9999) {
             setYearInput(yearStr);
             return;
@@ -82,7 +82,7 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
             setMonthInput(monthStr);
             return;
         }
-        const num = parseInt(trimmed, 10);
+        const num = Number.parseInt(trimmed, 10);
         if (num < 1 || num > 12) {
             setMonthInput(monthStr);
             return;
@@ -158,7 +158,6 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                     {isYearOptionsOpen && (
                         <ul
                             id={yearListId}
-                            role="listbox"
                             aria-label="年候補"
                             className={`${optionListClass} w-24 md:w-28`}
                         >
@@ -166,8 +165,6 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                                 <li key={y}>
                                     <button
                                         type="button"
-                                        role="option"
-                                        aria-selected={String(y) === yearStr}
                                         className={optionButtonClass}
                                         onMouseDown={(e) => {
                                             e.preventDefault();
@@ -217,7 +214,6 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                     {isMonthOptionsOpen && (
                         <ul
                             id={monthListId}
-                            role="listbox"
                             aria-label="月候補"
                             className={`${optionListClass} w-20`}
                         >
@@ -225,8 +221,6 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: MonthNavi
                                 <li key={m}>
                                     <button
                                         type="button"
-                                        role="option"
-                                        aria-selected={String(m).padStart(2, '0') === monthStr}
                                         className={optionButtonClass}
                                         onMouseDown={(e) => {
                                             e.preventDefault();
