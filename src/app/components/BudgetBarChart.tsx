@@ -14,8 +14,8 @@ interface BarChartEntry {
     color: string;
 }
 
-const INCOME_COLOR = '#22c55e';
-const EXPENSE_COLOR = '#ef4444';
+const INCOME_COLOR = '#3b82f6';
+const EXPENSE_COLOR = '#f97316';
 
 interface ChartDataResult {
     chartData: BarChartEntry[];

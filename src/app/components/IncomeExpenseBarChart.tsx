@@ -14,8 +14,8 @@ interface ChartEntry {
 }
 
 const BAR_COLORS: Record<string, string> = {
-    収入: '#22c55e',
-    支出: '#ef4444',
+    収入: '#3b82f6',
+    支出: '#f97316',
 };
 
 const LEGEND_PAYLOAD = Object.entries(BAR_COLORS).map(([name, color]) => ({

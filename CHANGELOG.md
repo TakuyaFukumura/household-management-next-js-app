@@ -7,6 +7,31 @@
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-04-05
+
+### 変更
+
+- `src/app/components/SummaryCards.tsx`: 収入・支出のテキスト色を色弱対応配色に変更
+    - 収入: `text-green-600 dark:text-green-400` → `text-blue-600 dark:text-blue-400`
+    - 支出: `text-red-600 dark:text-red-400` → `text-orange-600 dark:text-orange-400`
+- `src/app/components/BudgetSummaryCards.tsx`: 収入・支出のテキスト色を色弱対応配色に変更
+    - 収入: `text-green-600 dark:text-green-400` → `text-blue-600 dark:text-blue-400`
+    - 支出: `text-red-600 dark:text-red-400` → `text-orange-600 dark:text-orange-400`
+- `src/app/components/TransactionTable.tsx`: 収入・支出バッジの配色を色弱対応配色に変更
+    - 収入バッジ: `bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300` → `bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300`
+    - 支出バッジ: `bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300` → `bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300`
+- `src/app/components/IncomeExpenseBarChart.tsx`: 収入・支出バーの色を色弱対応配色に変更（`BAR_COLORS` 定数）
+    - 収入バー: `#22c55e`（緑）→ `#3b82f6`（青）
+    - 支出バー: `#ef4444`（赤）→ `#f97316`（オレンジ）
+- `src/app/components/BudgetBarChart.tsx`: 収入・支出バーの色を色弱対応配色に変更（`INCOME_COLOR`・`EXPENSE_COLOR` 定数）
+    - 収入バー: `#22c55e`（緑）→ `#3b82f6`（青）
+    - 支出バー: `#ef4444`（赤）→ `#f97316`（オレンジ）
+- `package.json`: バージョンを `0.15.1` から `0.16.0` に更新
+
+### 削除
+
+- `docs/色弱対応配色仕様.md`: 実装完了のため削除
+
 ## [0.15.1] - 2026-04-05
 
 ### 変更
