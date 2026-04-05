@@ -112,7 +112,7 @@ export default function BudgetPieChart({budgetEntries}: Props) {
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">支出予算の割合</h2>
+            <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">予算割合</h2>
             <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                     <Pie

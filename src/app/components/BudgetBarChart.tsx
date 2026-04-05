@@ -70,7 +70,7 @@ export default function BudgetBarChart({budgetEntries}: Props) {
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">収支予算</h2>
+            <h2 className="text-gray-700 dark:text-gray-200 font-semibold text-base mb-4">予算収支</h2>
             <ResponsiveContainer width="100%" height={200}>
                 <BarChart
                     data={chartData}
