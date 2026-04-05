@@ -7,8 +7,8 @@ interface Props {
 
 const typeBadgeClass = (type: string) =>
     type === '収入'
-        ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
-        : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300';
+        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+        : 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300';
 
 export default function TransactionTable({transactions}: Props) {
     const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date));

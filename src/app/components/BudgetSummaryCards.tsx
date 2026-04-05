@@ -15,8 +15,8 @@ export default function BudgetSummaryCards({budgetEntries}: Props) {
         .reduce((sum, e) => sum + e.amount, 0);
 
     const cards = [
-        {label: '想定収入', value: totalIncome, color: 'text-green-600 dark:text-green-400'},
-        {label: '想定支出', value: totalExpense, color: 'text-red-600 dark:text-red-400'},
+        {label: '想定収入', value: totalIncome, color: 'text-blue-600 dark:text-blue-400'},
+        {label: '想定支出', value: totalExpense, color: 'text-orange-600 dark:text-orange-400'},
     ];
 
     return (

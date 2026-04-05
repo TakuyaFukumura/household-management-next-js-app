@@ -17,8 +17,8 @@ export default function SummaryCards({transactions}: Props) {
     const balance = totalIncome - totalExpense;
 
     const cards = [
-        {label: '合計収入', value: totalIncome, color: 'text-green-600 dark:text-green-400'},
-        {label: '合計支出', value: totalExpense, color: 'text-red-600 dark:text-red-400'},
+        {label: '合計収入', value: totalIncome, color: 'text-blue-600 dark:text-blue-400'},
+        {label: '合計支出', value: totalExpense, color: 'text-orange-600 dark:text-orange-400'},
         {
             label: '収支差額',
             value: balance,
