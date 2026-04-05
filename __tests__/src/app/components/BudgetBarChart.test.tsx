@@ -34,7 +34,7 @@ describe('BudgetBarChart', () => {
 
         it('タイトルが表示される', () => {
             render(<BudgetBarChart budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('収支予算')).toBeInTheDocument();
+            expect(screen.getByText('予算収支')).toBeInTheDocument();
         });
 
         it('差額ラベルが表示される', () => {

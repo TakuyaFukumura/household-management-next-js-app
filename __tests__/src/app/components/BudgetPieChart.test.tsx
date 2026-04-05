@@ -33,7 +33,7 @@ describe('BudgetPieChart', () => {
 
         it('タイトルが表示される', () => {
             render(<BudgetPieChart budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('支出予算の割合')).toBeInTheDocument();
+            expect(screen.getByText('予算割合')).toBeInTheDocument();
         });
     });
 

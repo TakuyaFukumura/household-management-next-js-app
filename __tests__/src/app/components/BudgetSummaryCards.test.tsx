@@ -16,24 +16,24 @@ const budgetEntries: BudgetEntry[] = [
 
 describe('BudgetSummaryCards', () => {
     describe('基本的なレンダリング', () => {
-        it('収入予算カードが表示される', () => {
+        it('想定収入カードが表示される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('収入予算')).toBeInTheDocument();
+            expect(screen.getByText('想定収入')).toBeInTheDocument();
         });
 
-        it('支出予算カードが表示される', () => {
+        it('想定支出カードが表示される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('支出予算')).toBeInTheDocument();
+            expect(screen.getByText('想定支出')).toBeInTheDocument();
         });
     });
 
     describe('金額計算', () => {
-        it('収入予算合計が正しく計算される', () => {
+        it('想定収入合計が正しく計算される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
             expect(screen.getByText('¥400,000')).toBeInTheDocument();
         });
 
-        it('支出予算合計が正しく計算される', () => {
+        it('想定支出合計が正しく計算される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
             expect(screen.getByText('¥130,000')).toBeInTheDocument();
         });
