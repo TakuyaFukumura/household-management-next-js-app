@@ -7,6 +7,33 @@
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-06-19
+
+### 追加
+
+- `src/app/summary/page.tsx`: 集計ページ（`/summary`）を追加
+  - 直近12か月を初期値とする集計期間切替、対象種別切替、主表示（中央値 / 外れ値除外後平均）切替を実装
+  - 代表月間収入・支出・収支差額のサマリーカード、カテゴリ別テーブル、横棒グラフ、支出構成比円グラフを表示
+- `src/lib/aggregation.ts`: 月次合計ベースの集計ロジックを追加
+  - ゼロ件月を0円として含めた連続月集計を実装
+  - 非0円データに限定したIQR方式の外れ値判定と、中央値 / 外れ値除外後平均の算出を実装
+- `src/app/components/SummaryAggregationCards.tsx`: 集計ページ用サマリーカードを追加
+- `src/app/components/AggregationTable.tsx`: 集計ページ用カテゴリ別テーブルを追加
+- `src/app/components/CategoryBarChart.tsx`: 集計ページ用のカテゴリ別代表値横棒グラフを追加
+- `src/app/components/SummaryExpensePieChart.tsx`: 集計ページ用の支出構成比円グラフを追加
+- `__tests__/aggregation.test.ts`: 集計ロジックの単体テストを追加
+- `__tests__/summary-page.test.tsx`: 集計ページの表示・切替テストを追加
+
+### 変更
+
+- `src/app/components/Header.tsx`: ナビゲーションに「集計」（`/summary`）リンクを追加
+- `__tests__/src/app/components/Header.test.tsx`: 集計ページリンクのテストを追加
+- `package.json`: バージョンを `0.16.0` から `0.17.0` に更新
+
+### 削除
+
+- `docs/aggregation-page-spec.md`: 実装完了のため削除
+
 ## [0.16.0] - 2026-04-05
 
 ### 変更

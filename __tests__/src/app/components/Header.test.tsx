@@ -43,6 +43,11 @@ describe('Header', () => {
         expect(screen.getByRole('link', {name: /ホーム/})).toBeInTheDocument();
     });
 
+    it('/summaryへのナビゲーションリンクが表示される', () => {
+        render(<Header/>);
+        expect(screen.getByRole('link', {name: /集計/})).toBeInTheDocument();
+    });
+
     it('/budgetへのナビゲーションリンクが表示される', () => {
         render(<Header/>);
         expect(screen.getByRole('link', {name: /予算/})).toBeInTheDocument();
