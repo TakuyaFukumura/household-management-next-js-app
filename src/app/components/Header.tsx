@@ -7,6 +7,7 @@ import DarkModeToggle from './DarkModeToggle';
 
 const NAV_LINKS = [
     {href: '/', label: '🏠 ホーム'},
+    {href: '/summary', label: '📊 集計'},
     {href: '/budget', label: '💰 予算'},
     {href: '/upload', label: '📂 CSVをアップロード'},
 ];
