@@ -30,6 +30,7 @@ const COLORS = [
 ];
 
 const MIN_PERCENTAGE = 3;
+const SMALL_SLICES_LABEL = '3%未満カテゴリ';
 
 interface ChartEntry {
     name: string;
@@ -55,10 +56,10 @@ function aggregateSmallSlices(entries: readonly ChartEntry[], total: number): Ch
     }
 
     const otherValue = small.reduce((sum, entry) => sum + entry.value, 0);
-    const existingOther = main.find((entry) => entry.name === 'その他');
+    const existingOther = main.find((entry) => entry.name === SMALL_SLICES_LABEL);
 
     if (existingOther) {
-        return main.map((entry) => entry.name === 'その他'
+        return main.map((entry) => entry.name === SMALL_SLICES_LABEL
             ? {
                 ...entry,
                 value: entry.value + otherValue,
@@ -70,7 +71,7 @@ function aggregateSmallSlices(entries: readonly ChartEntry[], total: number): Ch
     return [
         ...main,
         {
-            name: 'その他',
+            name: SMALL_SLICES_LABEL,
             value: otherValue,
             percentage: total > 0 ? (otherValue / total) * 100 : 0,
             fill: COLORS[main.length % COLORS.length],
