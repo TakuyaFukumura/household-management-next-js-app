@@ -1,22 +1,24 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useSyncExternalStore} from 'react';
 
 export default function DarkModeToggle() {
-    const [isMounted, setIsMounted] = useState(false);
-    const [isDark, setIsDark] = useState(false);
+    const isMounted = useSyncExternalStore(
+        () => () => undefined,
+        () => true,
+        () => false
+    );
+    const [isDark, setIsDark] = useState(
+        () => typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark'
+    );
 
     useEffect(() => {
-        const saved = localStorage.getItem('theme');
-        const dark = saved === 'dark';
-        setIsDark(dark);
-        if (dark) {
+        if (isDark) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
-        setIsMounted(true);
-    }, []);
+    }, [isDark]);
 
     const toggleTheme = () => {
         const next = !isDark;

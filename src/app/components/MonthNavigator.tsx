@@ -10,19 +10,20 @@ interface MonthNavigatorProps {
 export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<MonthNavigatorProps>) {
     const [yearStr, monthStr] = selectedMonth.split('-');
     const currentYear = new Date().getFullYear();
-    const [yearInput, setYearInput] = useState(yearStr);
-    const [monthInput, setMonthInput] = useState(monthStr);
+    const [inputState, setInputState] = useState({
+        selectedMonth,
+        year: yearStr,
+        month: monthStr,
+    });
+    const isInputStateCurrent = inputState.selectedMonth === selectedMonth;
+    const yearInput = isInputStateCurrent ? inputState.year : yearStr;
+    const monthInput = isInputStateCurrent ? inputState.month : monthStr;
     const [isYearOptionsOpen, setIsYearOptionsOpen] = useState(false);
     const [isMonthOptionsOpen, setIsMonthOptionsOpen] = useState(false);
     const yearListId = useId();
     const monthListId = useId();
     const yearFieldRef = useRef<HTMLDivElement>(null);
     const monthFieldRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        setYearInput(yearStr);
-        setMonthInput(monthStr);
-    }, [yearStr, monthStr]);
 
     useEffect(() => {
         function handleMouseDown(event: MouseEvent) {
@@ -64,12 +65,12 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<
         const trimmed = value.trim();
         setIsYearOptionsOpen(false);
         if (trimmed === '' || !/^\d+$/.test(trimmed)) {
-            setYearInput(yearStr);
+            setInputState({selectedMonth, year: yearStr, month: monthStr});
             return;
         }
         const num = Number.parseInt(trimmed, 10);
         if (num < 1000 || num > 9999) {
-            setYearInput(yearStr);
+            setInputState({selectedMonth, year: yearStr, month: monthStr});
             return;
         }
         onMonthChange(`${String(num)}-${monthStr}`);
@@ -79,12 +80,12 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<
         const trimmed = value.trim();
         setIsMonthOptionsOpen(false);
         if (trimmed === '' || !/^\d+$/.test(trimmed)) {
-            setMonthInput(monthStr);
+            setInputState({selectedMonth, year: yearStr, month: monthStr});
             return;
         }
         const num = Number.parseInt(trimmed, 10);
         if (num < 1 || num > 12) {
-            setMonthInput(monthStr);
+            setInputState({selectedMonth, year: yearStr, month: monthStr});
             return;
         }
         onMonthChange(`${yearStr}-${String(num).padStart(2, '0')}`);
@@ -101,13 +102,13 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<
         'block w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700';
 
     function selectYear(year: number) {
-        setYearInput(String(year));
+        setInputState({selectedMonth, year: String(year), month: monthInput});
         setIsYearOptionsOpen(false);
         onMonthChange(`${String(year)}-${monthStr}`);
     }
 
     function selectMonth(month: number) {
-        setMonthInput(String(month).padStart(2, '0'));
+        setInputState({selectedMonth, year: yearInput, month: String(month).padStart(2, '0')});
         setIsMonthOptionsOpen(false);
         onMonthChange(`${yearStr}-${String(month).padStart(2, '0')}`);
     }
@@ -136,7 +137,11 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<
                         aria-expanded={isYearOptionsOpen}
                         aria-controls={yearListId}
                         value={yearInput}
-                        onChange={(e) => setYearInput(e.target.value)}
+                        onChange={(e) => setInputState({
+                            selectedMonth,
+                            year: e.target.value,
+                            month: monthInput,
+                        })}
                         onFocus={() => setIsYearOptionsOpen(true)}
                         onClick={() => setIsYearOptionsOpen(true)}
                         onBlur={(e) => commitYear(e.target.value)}
@@ -192,7 +197,11 @@ export default function MonthNavigator({selectedMonth, onMonthChange}: Readonly<
                         aria-expanded={isMonthOptionsOpen}
                         aria-controls={monthListId}
                         value={monthInput}
-                        onChange={(e) => setMonthInput(e.target.value)}
+                        onChange={(e) => setInputState({
+                            selectedMonth,
+                            year: yearInput,
+                            month: e.target.value,
+                        })}
                         onFocus={() => setIsMonthOptionsOpen(true)}
                         onClick={() => setIsMonthOptionsOpen(true)}
                         onBlur={(e) => commitMonth(e.target.value)}
