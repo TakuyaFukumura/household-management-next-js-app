@@ -14,8 +14,10 @@ export const EXPENSE_CATEGORIES = [
     '投資額',
     '保険料',
     '特別費',
+    '寄付金',
     '交際費',
     '美容費',
+    '衣服費',
     '教養費',
     'その他',
 ] as const;
