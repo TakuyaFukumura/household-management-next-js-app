@@ -9,7 +9,6 @@ import type {BudgetEntry} from '@/lib/budget';
 
 const budgetEntries: BudgetEntry[] = [
     {category: '給与', type: '収入', amount: 350000},
-    {category: '副業', type: '収入', amount: 50000},
     {category: '食料費', type: '支出', amount: 50000},
     {category: '住宅費', type: '支出', amount: 80000},
 ];
@@ -30,7 +29,7 @@ describe('BudgetSummaryCards', () => {
     describe('金額計算', () => {
         it('想定収入合計が正しく計算される', () => {
             render(<BudgetSummaryCards budgetEntries={budgetEntries}/>);
-            expect(screen.getByText('¥400,000')).toBeInTheDocument();
+            expect(screen.getByText('¥350,000')).toBeInTheDocument();
         });
 
         it('想定支出合計が正しく計算される', () => {

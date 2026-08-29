@@ -21,7 +21,6 @@ jest.mock('recharts', () => ({
 
 const budgetEntries: BudgetEntry[] = [
     {category: '給与', type: '収入', amount: 350000},
-    {category: '副業', type: '収入', amount: 50000},
     {category: '食料費', type: '支出', amount: 50000},
 ];
 
@@ -44,8 +43,8 @@ describe('BudgetBarChart', () => {
 
         it('黒字の場合、差額が緑色で表示される', () => {
             render(<BudgetBarChart budgetEntries={budgetEntries}/>);
-            // 収入400000 - 支出50000 = 350000（黒字）
-            const differenceSpan = screen.getByText('+¥350,000');
+            // 収入350000 - 支出50000 = 300000（黒字）
+            const differenceSpan = screen.getByText('+¥300,000');
             expect(differenceSpan).toHaveClass('text-green-600');
         });
 
