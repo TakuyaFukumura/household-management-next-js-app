@@ -48,6 +48,12 @@ describe('BudgetTable', () => {
             expect(screen.getByText('¥350,000')).toBeInTheDocument();
             expect(screen.getByText('¥50,000')).toBeInTheDocument();
         });
+
+        it('種別を収入は青、支出はオレンジのバッジで表示する', () => {
+            render(<BudgetTable budgetEntries={budgetEntries}/>);
+            expect(screen.getByText('収入')).toHaveClass('bg-blue-100');
+            expect(screen.getByText('支出')).toHaveClass('bg-orange-100');
+        });
     });
 
     describe('空データの場合', () => {
