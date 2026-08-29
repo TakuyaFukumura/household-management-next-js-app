@@ -19,6 +19,12 @@ function buildTableRows(budgetEntries: readonly BudgetEntry[]): TableRow[] {
     }));
 }
 
+function typeBadgeClass(type: TableRow['type']): string {
+    return type === '収入'
+        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+        : 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300';
+}
+
 export default function BudgetTable({budgetEntries}: Readonly<Props>) {
     const rows = buildTableRows(budgetEntries);
     const incomeRows = rows.filter((r) => r.type === '収入');
@@ -42,7 +48,11 @@ export default function BudgetTable({budgetEntries}: Readonly<Props>) {
                     <tr key={row.category}
                         className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-4 py-3">{row.category}</td>
-                        <td className="px-4 py-3">{row.type}</td>
+                        <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${typeBadgeClass(row.type)}`}>
+                                {row.type}
+                            </span>
+                        </td>
                         <td className="px-4 py-3 text-right">¥{row.budget.toLocaleString()}</td>
                     </tr>
                 ))}
