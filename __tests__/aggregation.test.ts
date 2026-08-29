@@ -31,7 +31,6 @@ describe('aggregateTransactions', () => {
         {date: '2025-04-05', category: '食料費', type: '支出', amount: 9000, memo: ''},
         {date: '2025-05-01', category: '給与', type: '収入', amount: 300000, memo: ''},
         {date: '2025-05-05', category: '食料費', type: '支出', amount: 100000, memo: ''},
-        {date: '2025-05-10', category: '副業', type: '収入', amount: 50000, memo: ''},
     ];
 
     it('カテゴリごとの月次合計から代表値を集計する', () => {

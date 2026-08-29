@@ -1,5 +1,5 @@
 /** 収入カテゴリの一覧 */
-export const INCOME_CATEGORIES = ['給与', '副業'] as const;
+export const INCOME_CATEGORIES = ['給与'] as const;
 
 /** 支出カテゴリの一覧 */
 export const EXPENSE_CATEGORIES = [
