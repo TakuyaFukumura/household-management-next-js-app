@@ -11,6 +11,12 @@ function formatCurrency(value: number): string {
     return `¥${Math.round(value).toLocaleString()}`;
 }
 
+function typeBadgeClass(type: CategoryAggregation['type']): string {
+    return type === '収入'
+        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+        : 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300';
+}
+
 export default function AggregationTable({categories, metric}: Readonly<Props>) {
     const sortedCategories = categories
         .filter((category) => category.median !== 0 || category.trimmedMean !== 0)
@@ -37,7 +43,11 @@ export default function AggregationTable({categories, metric}: Readonly<Props>) 
                         className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
                         <td className="px-4 py-3">{category.category}</td>
-                        <td className="px-4 py-3">{category.type}</td>
+                        <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${typeBadgeClass(category.type)}`}>
+                                {category.type}
+                            </span>
+                        </td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.median)}</td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.trimmedMean)}</td>
                         <td className="px-4 py-3 text-right">{category.outlierCount}</td>
