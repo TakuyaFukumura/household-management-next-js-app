@@ -11,12 +11,16 @@ function formatCurrency(value: number): string {
     return `¥${Math.round(value).toLocaleString()}`;
 }
 
-export default function AggregationTable({categories, metric}: Readonly<Props>) {
-    const sortedCategories = [...categories].sort(
-        (a, b) => getRepresentativeValue(b, metric) - getRepresentativeValue(a, metric),
-    );
-    const metricLabel = metric === 'trimmedMean' ? '外れ値除外後平均' : '中央値';
+function typeBadgeClass(type: CategoryAggregation['type']): string {
+    return type === '収入'
+        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+        : 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300';
+}
 
+export default function AggregationTable({categories, metric}: Readonly<Props>) {
+    const sortedCategories = categories
+        .filter((category) => category.median !== 0 || category.trimmedMean !== 0)
+        .sort((a, b) => getRepresentativeValue(b, metric) - getRepresentativeValue(a, metric));
     return (
         <div className="overflow-x-auto">
             <table className="w-full bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow text-sm">
@@ -27,10 +31,8 @@ export default function AggregationTable({categories, metric}: Readonly<Props>) 
                 <tr>
                     <th scope="col" className="px-4 py-3 text-left">カテゴリ</th>
                     <th scope="col" className="px-4 py-3 text-left">種別</th>
-                    <th scope="col" className="px-4 py-3 text-right">{metricLabel}</th>
                     <th scope="col" className="px-4 py-3 text-right">中央値</th>
                     <th scope="col" className="px-4 py-3 text-right">外れ値除外後平均</th>
-                    <th scope="col" className="px-4 py-3 text-right">対象月数</th>
                     <th scope="col" className="px-4 py-3 text-right">外れ値除外件数</th>
                 </tr>
                 </thead>
@@ -41,19 +43,19 @@ export default function AggregationTable({categories, metric}: Readonly<Props>) 
                         className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
                         <td className="px-4 py-3">{category.category}</td>
-                        <td className="px-4 py-3">{category.type}</td>
-                        <td className="px-4 py-3 text-right font-semibold">
-                            {formatCurrency(getRepresentativeValue(category, metric))}
+                        <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${typeBadgeClass(category.type)}`}>
+                                {category.type}
+                            </span>
                         </td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.median)}</td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.trimmedMean)}</td>
-                        <td className="px-4 py-3 text-right">{category.monthCount}</td>
                         <td className="px-4 py-3 text-right">{category.outlierCount}</td>
                     </tr>
                 ))}
                 {sortedCategories.length === 0 && (
                     <tr>
-                        <td colSpan={7} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                        <td colSpan={5} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
                             データがありません
                         </td>
                     </tr>
