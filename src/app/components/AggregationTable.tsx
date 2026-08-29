@@ -12,9 +12,9 @@ function formatCurrency(value: number): string {
 }
 
 export default function AggregationTable({categories, metric}: Readonly<Props>) {
-    const sortedCategories = [...categories].sort(
-        (a, b) => getRepresentativeValue(b, metric) - getRepresentativeValue(a, metric),
-    );
+    const sortedCategories = categories
+        .filter((category) => category.median !== 0 || category.trimmedMean !== 0)
+        .sort((a, b) => getRepresentativeValue(b, metric) - getRepresentativeValue(a, metric));
     return (
         <div className="overflow-x-auto">
             <table className="w-full bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow text-sm">
