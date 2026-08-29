@@ -30,7 +30,6 @@ export default function AggregationTable({categories, metric}: Readonly<Props>) 
                     <th scope="col" className="px-4 py-3 text-right">{metricLabel}</th>
                     <th scope="col" className="px-4 py-3 text-right">中央値</th>
                     <th scope="col" className="px-4 py-3 text-right">外れ値除外後平均</th>
-                    <th scope="col" className="px-4 py-3 text-right">対象月数</th>
                     <th scope="col" className="px-4 py-3 text-right">外れ値除外件数</th>
                 </tr>
                 </thead>
@@ -47,13 +46,12 @@ export default function AggregationTable({categories, metric}: Readonly<Props>) 
                         </td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.median)}</td>
                         <td className="px-4 py-3 text-right">{formatCurrency(category.trimmedMean)}</td>
-                        <td className="px-4 py-3 text-right">{category.monthCount}</td>
                         <td className="px-4 py-3 text-right">{category.outlierCount}</td>
                     </tr>
                 ))}
                 {sortedCategories.length === 0 && (
                     <tr>
-                        <td colSpan={7} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
+                        <td colSpan={6} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">
                             データがありません
                         </td>
                     </tr>

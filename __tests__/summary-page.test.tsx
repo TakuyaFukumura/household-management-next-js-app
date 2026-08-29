@@ -76,6 +76,7 @@ describe('SummaryPage（集計ページ）', () => {
         expect(screen.getByText('代表月間収入')).toBeInTheDocument();
         expect(screen.getByText('代表月間支出')).toBeInTheDocument();
         expect(screen.getByText('代表月間収支差額')).toBeInTheDocument();
+        expect(screen.queryByText('対象月数')).not.toBeInTheDocument();
     });
 
     it('主表示を切り替えると外れ値除外後平均ベースの金額を表示する', async () => {
